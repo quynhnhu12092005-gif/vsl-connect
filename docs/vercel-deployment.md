@@ -2,7 +2,8 @@
 
 The root `vercel.json` defines Vercel Services: a static Vite frontend and the
 existing FastAPI Docker image. The backend container retains PyTorch, MediaPipe,
-OpenCV, the trained model files and FFmpeg. It listens on port 8000. Vercel Services
+OpenCV, the trained model files and FFmpeg. It listens on the `PORT` environment
+variable, falling back to 8000 for local Docker. Vercel Services
 and Container Runtime are beta features; verify availability and build/runtime
 limits on the target account before treating this as a production deployment.
 
@@ -58,7 +59,7 @@ before processing real users' data.
 
 | Variable | Value |
 | --- | --- |
-| `PORT` | `8000` (container routing must match Uvicorn's listening port) |
+| `PORT` | `8000` explicitly, or the port assigned by Vercel; the container reads this value at startup |
 | `TIDB_HOST`, `TIDB_PORT`, `TIDB_USER`, `TIDB_PASSWORD`, `TIDB_DB_NAME` | Test TiDB connection; port from TiDB, usually 4000 |
 | `AUTH_TOKEN_SECRET` | Random secret of at least 32 characters; use a separate deployment secret |
 | `AUTH_COOKIE_SECURE` | `true` |
@@ -78,6 +79,12 @@ Once the stable Vercel domain is known, register the HTTPS callback above in
 Google Cloud's authorized redirect URIs, update both environment variables and
 redeploy. Admin is at `/admin` on the public domain. Use the stable domain for
 OAuth, rather than each changing preview URL.
+
+For `vsl-connect.vercel.app`, both callback variables are
+`https://vsl-connect.vercel.app/api/v1/auth/google/callback`. With a shared host,
+the signed OAuth flow purpose selects `/dang-nhap` or `/admin` after returning
+from Google; a separate local admin host still returns to `/`. Account roles
+are checked independently of this navigation, and email OTP remains required.
 
 ## 4. Migrations and verification
 
@@ -108,3 +115,16 @@ After a test deployment succeeds, verify:
   first cloud build and runtime logs before declaring deployment successful.
 - Backups, restore verification, actual data migration, and full user-flow checks
   remain required before storing important user data in the deployment.
+
+## Troubleshooting: Vercel expects port 80 but detects port 8000
+
+The old image used a hardcoded Uvicorn port. The Docker command now expands
+`${PORT:-8000}` and uses `exec` so Uvicorn receives shutdown signals directly.
+Publish this Dockerfile change through `qnhu` and merge it into the personal fork's
+production branch, then wait for the new deployment. Check `/health` first, then
+`/health/ready`. A successful build alone does not verify either endpoint.
+
+For the previously deployed image, the immediate workaround is to set project
+environment variable `PORT=8000` for Production and redeploy. Editing an environment
+variable does not change an existing deployment. Keep this value when deploying
+the corrected Dockerfile if the Vercel runtime does not supply a port automatically.

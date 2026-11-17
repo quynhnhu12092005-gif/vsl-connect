@@ -38,7 +38,12 @@ logger = logging.getLogger(__name__)
 
 def is_admin_host(request: Request) -> bool:
     admin_uri = os.getenv('GOOGLE_ADMIN_REDIRECT_URI', DEFAULT_ADMIN_REDIRECT_URI).strip()
-    return bool(urlparse(admin_uri).hostname and request.url.hostname == urlparse(admin_uri).hostname)
+    login_uri = os.getenv('GOOGLE_REDIRECT_URI', DEFAULT_REDIRECT_URI).strip()
+    admin_host = urlparse(admin_uri).hostname
+    # A shared production domain uses the signed flow purpose to select /admin
+    # or /dang-nhap. Only a dedicated admin host has its admin UI at /.
+    return bool(admin_host and admin_host != urlparse(login_uri).hostname
+                and request.url.hostname == admin_host)
 
 
 def configuration(admin_origin: bool = False):

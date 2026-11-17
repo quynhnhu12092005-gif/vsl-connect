@@ -339,6 +339,38 @@ def test_google_admin_host_uses_its_own_callback_and_session(client, google_conf
         assert client.get('/api/v1/auth/me').status_code == 401
 
 
+@pytest.mark.parametrize('purpose,destination', [('login', '/dang-nhap'), ('admin', '/admin')])
+def test_google_shared_domain_preserves_destination_and_requires_otp(
+    client, google_config, monkeypatch, purpose, destination,
+):
+    callback_uri = 'https://vsl-connect.vercel.app/api/v1/auth/google/callback'
+    monkeypatch.setenv('GOOGLE_REDIRECT_URI', callback_uri)
+    monkeypatch.setenv('GOOGLE_ADMIN_REDIRECT_URI', callback_uri)
+    monkeypatch.setenv('AUTH_COOKIE_SECURE', 'true')
+    calls = []
+
+    def verify(code, verifier, nonce, admin_origin):
+        calls.append(admin_origin)
+        return {'sub': 'shared-host-user', 'email': 'shared@example.com', 'name': 'Shared User'}
+
+    monkeypatch.setattr('app.google_auth.verify_google_code', verify)
+    with TestClient(app, base_url='https://vsl-connect.vercel.app') as cloud_client:
+        start = cloud_client.get('/api/v1/auth/google/start', params={'return_to': purpose})
+        assert start.status_code == 200
+        params = parse_qs(urlparse(start.json()['url']).query)
+        assert params['redirect_uri'] == [callback_uri]
+        response = cloud_client.get('/api/v1/auth/google/callback',
+            params={'state': params['state'][0], 'code': 'test-code'}, follow_redirects=False)
+        assert response.headers['location'] == destination + '?google_pending=1'
+        assert cloud_client.get('/api/v1/auth/me').status_code == 401
+        assert len(google_config) > 0
+        assert confirm_google(cloud_client, google_config).status_code == 200
+        assert calls == [False]
+        # Selecting the admin destination must never grant administrator rights.
+        assert cloud_client.get('/api/v1/auth/me').json()['user']['role'] == 'learner'
+        assert cloud_client.get('/api/v1/admin/overview').status_code == 403
+
+
 def test_media_upload_requires_admin_csrf_and_configuration(client, monkeypatch):
     image = b'\x89PNG\r\n\x1a\nexample'
     headers = {'Content-Type': 'image/png'}
