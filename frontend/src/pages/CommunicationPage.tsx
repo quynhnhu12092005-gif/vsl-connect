@@ -4,6 +4,7 @@ import { EmptyState, LoadState } from '../components/ui/EmptyState';
 import { FeaturePageBanner } from '../components/ui/FeaturePageBanner';
 import { Icon } from '../components/ui/Icon';
 import { type Sign, useApi } from '../services/api';
+import { RoomsHub } from '../features/rooms/RoomsHub';
 
 type TopicMeta = { label: string; icon: string; description: string };
 
@@ -45,6 +46,7 @@ export function CommunicationPage() {
   return (
     <div className="overflow-hidden bg-surface-card pb-14 dark:bg-slate-950 sm:pb-18">
       <FeaturePageBanner eyebrow="Công cụ giao tiếp" title="Giao tiếp dễ dàng hơn" description="Chọn chủ đề, học từ vựng qua video ký hiệu và sử dụng giọng nói tiếng Việt khi cần." icon="forum" />
+      <RoomsHub />
       <div className="feature-workspace mx-auto grid max-w-[1440px] gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[242px_minmax(0,1fr)] lg:px-12 lg:py-10 xl:px-16">
         <aside className="lg:sticky lg:top-24 lg:h-fit">
           <div className="rounded-xl border border-slate-200 bg-surface-card p-3 shadow-[0_14px_28px_-24px_rgba(15,23,42,0.5)] dark:border-slate-800 dark:bg-slate-900">

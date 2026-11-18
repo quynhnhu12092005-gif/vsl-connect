@@ -68,7 +68,7 @@ export class ApiError extends Error {
   }
 }
 
-type RequestOptions = { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; body?: unknown; csrfToken?: string };
+type RequestOptions = { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; body?: unknown; csrfToken?: string; signal?: AbortSignal };
 const SESSION_EVENT = 'vsl-session-changed';
 const AUTH_CHANGE_KEY = 'vsl-connect-auth-change';
 
@@ -79,7 +79,7 @@ function notifySessionChanged(session?: AuthSession | null) {
   }
 }
 
-export async function apiRequest<T>(path: string, { method = 'GET', body, csrfToken }: RequestOptions = {}): Promise<T> {
+export async function apiRequest<T>(path: string, { method = 'GET', body, csrfToken, signal }: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {};
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (csrfToken) headers['X-CSRF-Token'] = csrfToken;
@@ -87,6 +87,7 @@ export async function apiRequest<T>(path: string, { method = 'GET', body, csrfTo
     method,
     headers,
     credentials: 'same-origin',
+    signal,
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (response.status === 204) return undefined as T;

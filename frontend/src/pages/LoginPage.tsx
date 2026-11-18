@@ -1,10 +1,13 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { takeRoomReturn } from '../features/rooms/roomApi';
 import { GoogleAction, GoogleError, GoogleSuccess } from '../components/auth/GoogleActions';
 import { AccountProfile } from '../features/account/AccountProfile';
 import { GoogleVerification } from '../features/account/GoogleVerification';
 import { ApiError, type AuthSession, getSession, login, logout, register } from '../services/adminApi';
 
 export function LoginPage() {
+  const navigate = useNavigate();
   const [session, setSession] = useState<AuthSession | null>(null);
   const [googlePending, setGooglePending] = useState(() => new URLSearchParams(window.location.search).get('google_pending') === '1');
   const [loading, setLoading] = useState(true);
@@ -16,6 +19,13 @@ export function LoginPage() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (session && !googlePending) {
+      const destination = takeRoomReturn();
+      if (destination) navigate(destination, { replace: true });
+    }
+  }, [session, googlePending, navigate]);
 
   useEffect(() => {
     getSession()

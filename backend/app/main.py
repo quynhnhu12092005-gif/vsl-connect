@@ -15,6 +15,7 @@ from app.google_auth import router as google_auth_router
 from app.gesture import router as gesture_router
 from app.media import router as media_router
 from app.profile import router as profile_router
+from app.rooms import router as rooms_router
 from app.db import get_db, get_engine
 from app.models import Course, Lesson, Sign
 from app.schemas import CourseOut, LessonOut, SignOut
@@ -26,6 +27,7 @@ app.include_router(admin_router)
 app.include_router(media_router)
 app.include_router(gesture_router)
 app.include_router(profile_router)
+app.include_router(rooms_router)
 
 
 def database_session():

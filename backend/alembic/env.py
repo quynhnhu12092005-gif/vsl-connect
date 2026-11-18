@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, pool, text
 
 from app.db import Base, get_connect_args, get_database_url
 import app.models  # noqa: F401 - register tables for autogenerate
+import app.room_models  # noqa: F401 - register call room tables
 
 config = context.config
 if config.config_file_name:

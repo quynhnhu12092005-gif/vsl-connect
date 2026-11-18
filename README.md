@@ -274,6 +274,10 @@ Tùy kết quả thử nghiệm, AI inference có thể chạy trong trình duy�
 - **Giai đoạn 5:** Chuẩn bị dữ liệu VSL, huấn luyện/đánh giá model, tích hợp camera AI.
 - **Giai đoạn 6:** WebRTC, signaling, TURN, phụ đề AI và kiểm thử kết nối thực tế.
 
+## Phòng gọi video
+
+Trang **Giao tiếp** hỗ trợ phòng công khai/riêng tư tối đa 6 người, mã phòng và link mời, video/âm thanh và giơ tay. Không có chat hoặc ghi hình. Xem [hướng dẫn cấu hình TURN, migration và kiểm thử](docs/call-rooms.md) trước khi triển khai.
+
 ## 12. Quy tắc đóng góp và làm việc với AI
 
 Trước khi sửa mã nguồn:
