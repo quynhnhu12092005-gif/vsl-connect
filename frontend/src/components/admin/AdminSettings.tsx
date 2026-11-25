@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTheme, type Theme } from '../../context/ThemeContext';
 import { ThemeChoices } from '../common/ThemePicker';
 import { Icon } from '../ui/Icon';
+import { SeasonalSettings } from './SeasonalSettings';
 
 type Density = 'compact' | 'comfortable';
 const DENSITY_KEY = 'vsl-connect-admin-density';
@@ -23,7 +24,7 @@ function readReducedMotion() {
   }
 }
 
-export function AdminSettings() {
+export function AdminSettings({ csrfToken }: { csrfToken: string }) {
   const { theme, setTheme, setSiteTheme } = useTheme();
   const [density, setDensity] = useState<Density>(readDensity);
   const [reducedMotion, setReducedMotion] = useState(readReducedMotion);
@@ -46,9 +47,10 @@ export function AdminSettings() {
   }
 
   return <section aria-labelledby="settings-title" className="max-w-4xl">
-    <div className="mb-6"><p className="text-label-sm uppercase tracking-[0.14em] text-primary">Không gian quản trị</p><h2 id="settings-title" className="mt-1 text-headline-lg">Cài đặt</h2><p className="mt-1 text-body-sm text-on-surface-variant">Các tùy chọn này chỉ áp dụng cho trình duyệt bạn đang dùng.</p></div>
+    <div className="mb-6"><p className="text-label-sm uppercase tracking-[0.14em] text-primary">Không gian quản trị</p><h2 id="settings-title" className="mt-1 text-headline-lg">Cài đặt</h2><p className="mt-1 text-body-sm text-on-surface-variant">Quản lý giao diện theo mùa và tùy chỉnh hiển thị trên trình duyệt của bạn.</p></div>
     <div className="space-y-4">
-      <section className="rounded-2xl border border-surface-border bg-surface-card p-5" aria-labelledby="site-theme-title"><h3 id="site-theme-title" className="text-headline-sm">Chủ đề văn hóa Việt</h3><p className="mb-5 mt-2 text-sm text-on-surface-variant">Đồng bộ màu sắc và họa tiết trên toàn bộ website.</p><ThemeChoices compact /></section>
+      <SeasonalSettings csrfToken={csrfToken} />
+      <section className="rounded-2xl border border-surface-border bg-surface-card p-5" aria-labelledby="site-theme-title"><h3 id="site-theme-title" className="text-headline-sm">Chủ đề cá nhân</h3><p className="mb-5 mt-2 text-sm text-on-surface-variant">Lựa chọn này được lưu trên trình duyệt bạn đang dùng.</p><ThemeChoices compact /></section>
       <section className="rounded-2xl border border-surface-container bg-surface-container-lowest p-5 shadow-card" aria-labelledby="appearance-title">
         <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-container text-on-secondary-container"><Icon name="palette" className="text-[22px]" /></span><div><h3 id="appearance-title" className="text-headline-sm">Giao diện</h3><p className="mt-1 text-body-sm text-on-surface-variant">Chọn chế độ màu phù hợp khi quản lý nội dung.</p></div></div>
         <div className="mt-4 flex flex-wrap gap-3" role="group" aria-label="Chế độ màu">{(['light', 'dark'] as Theme[]).map((item) => <button key={item} type="button" onClick={() => setTheme(item)} aria-pressed={theme === item} className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-label-md transition-colors ${theme === item ? 'border-primary bg-secondary-container text-on-secondary-container' : 'border-outline-variant text-on-surface hover:bg-surface-container-low'}`}><Icon name={item === 'light' ? 'light_mode' : 'dark_mode'} className="text-[18px]" />{item === 'light' ? 'Sáng' : 'Tối'}</button>)}</div>

@@ -8,7 +8,7 @@ const actionMeta = {
   deleted: { label: 'Đã xóa', icon: 'delete', tone: 'bg-error-container text-error' },
 } as const;
 
-const resourceLabels: Record<string, string> = { course: 'Khóa học', lesson: 'Bài học', sign: 'Ký hiệu', user: 'Người dùng' };
+const resourceLabels: Record<string, string> = { course: 'Khóa học', lesson: 'Bài học', sign: 'Ký hiệu', user: 'Người dùng', seasonal_appearance: 'Giao diện theo mùa' };
 
 function formatDate(value: string) {
   const date = new Date(value);

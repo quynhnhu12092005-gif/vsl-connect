@@ -1,0 +1,48 @@
+.winter-artwork {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  pointer-events: none;
+  background: #a9d4f4 url('../../assets/winter-frost-landscape.webp') left center / cover no-repeat;
+}
+
+.theme-banner-art > .winter-artwork {
+  position: absolute;
+  opacity: .62;
+  mask-image: linear-gradient(to right, transparent, #000 45%);
+}
+
+.winter-snow {
+  position: absolute;
+  inset: 0;
+}
+
+.winter-flake {
+  position: absolute;
+  inset-block: 0;
+  width: var(--snow-size);
+  animation: winter-snowfall var(--snow-time) var(--snow-delay) linear infinite;
+}
+
+.winter-flake::before {
+  content: '';
+  display: block;
+  height: var(--snow-size);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 5px rgb(43 98 151 / 35%);
+}
+
+@keyframes winter-snowfall {
+  0% { transform: translate3d(0, -4%, 0); opacity: 0; }
+  12%, 82% { opacity: .78; }
+  100% { transform: translate3d(var(--snow-drift), 100%, 0); opacity: 0; }
+}
+
+:root[data-background-motion='off'] .winter-snow,
+:root.admin-reduced-motion .winter-snow { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .winter-snow { display: none; }
+}

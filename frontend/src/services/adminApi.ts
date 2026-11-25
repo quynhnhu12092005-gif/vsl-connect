@@ -17,6 +17,7 @@ export type AdminUser = {
 };
 
 export type AuthSession = { user: AdminUser; csrf_token: string };
+export type SeasonalAppearance = { winter_enabled: boolean; revision: number };
 export type AdminOverview = { courses: number; lessons: number; signs: number; users: number };
 
 export type AdminCourse = {
@@ -138,7 +139,7 @@ export async function verifyGoogle(body: { code: string; google_code?: string },
   return session;
 }
 
-type ResourceState<T> = { data: T | null; loading: boolean; error: string | null; refresh: () => void };
+type ResourceState<T> = { data: T | null; loading: boolean; error: string | null; refresh: () => void; setData: (data: T | null) => void };
 
 export function useAdminResource<T>(path: string, enabled = true): ResourceState<T> {
   const [data, setData] = useState<T | null>(null);
@@ -168,18 +169,23 @@ export function useAdminResource<T>(path: string, enabled = true): ResourceState
   }, [enabled, path, refresh]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      setData(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
     const controller = new AbortController();
     setLoading(true);
     setError(null);
-    apiRequest<T>(path)
+    apiRequest<T>(path, { signal: controller.signal })
       .then((result) => { if (!controller.signal.aborted) setData(result); })
       .catch((requestError: unknown) => { if (!controller.signal.aborted) { if (path === '/auth/me') setData(null); setError(requestError instanceof Error ? requestError.message : 'Không thể tải dữ liệu.'); } })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [attempt, enabled, path]);
 
-  return { data, loading, error, refresh };
+  return { data, loading, error, refresh, setData };
 }
 
 export function usePagedAdminResource<T>(path: string) {

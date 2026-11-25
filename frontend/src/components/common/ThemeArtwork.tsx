@@ -4,6 +4,7 @@ import { DongHoArtwork } from './DongHoArtwork';
 import { PatternsArtwork } from './PatternsArtwork';
 import { PuppetsArtwork } from './PuppetsArtwork';
 import { HeritageArtwork } from './HeritageArtwork';
+import { WinterArtwork } from './WinterArtwork';
 
 // Each cultural theme shares its artwork across the hero, picker and banners.
 export function ThemeArtwork({ theme, className = '' }: { theme: SiteTheme; className?: string }) {
@@ -11,5 +12,6 @@ export function ThemeArtwork({ theme, className = '' }: { theme: SiteTheme; clas
   if (theme === 'puppets') return <PuppetsArtwork className={className} />;
   if (theme === 'patterns') return <PatternsArtwork className={className} />;
   if (theme === 'dongho') return <DongHoArtwork className={className} />;
+  if (theme === 'winter') return <WinterArtwork className={className} />;
   return <HeritageArtwork className={className} />;
 }

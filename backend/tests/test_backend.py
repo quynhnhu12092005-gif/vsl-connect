@@ -58,6 +58,44 @@ def client(tmp_path):
         os.environ['AUTH_TOKEN_SECRET'] = old_auth_secret
 
 
+def test_shared_winter_appearance_requires_admin_to_change(client):
+    read = '/api/v1/auth/seasonal-appearance'
+    write = '/api/v1/admin/seasonal-appearance'
+    assert client.get(read).status_code == 401
+    assert client.put(write, json={'winter_enabled': True}).status_code == 401
+
+    def login(email):
+        response = client.post('/api/v1/auth/login', json={
+            'email': email, 'password': 'correct-horse-battery-staple',
+        })
+        assert response.status_code == 200
+        return {'X-CSRF-Token': response.json()['csrf_token']}
+
+    admin = login('admin@example.com')
+    assert client.get(read).json() == {'winter_enabled': False, 'revision': 0}
+    assert client.put(write, json={'winter_enabled': True}).status_code == 403
+    assert client.put(write, json={'winter_enabled': 'true'}, headers=admin).status_code == 422
+    active = {'winter_enabled': True, 'revision': 1}
+    assert client.put(write, json={'winter_enabled': True}, headers=admin).json() == active
+    assert client.put(write, json={'winter_enabled': True}, headers=admin).json() == active
+    logs = client.get('/api/v1/admin/audit-logs').json()
+    assert len(logs) == 1 and logs[0]['resource_type'] == 'seasonal_appearance'
+
+    learner = login('learner@example.com')
+    response = client.get(read)
+    assert response.json() == active
+    assert response.headers['cache-control'] == 'private, no-store'
+    assert client.put(write, json={'winter_enabled': False}, headers=learner).status_code == 403
+
+    admin = login('admin@example.com')
+    assert client.put(write, json={'winter_enabled': False}, headers=admin).json() == {
+        'winter_enabled': False, 'revision': 2,
+    }
+    assert client.put(write, json={'winter_enabled': True}, headers=admin).json() == {
+        'winter_enabled': True, 'revision': 3,
+    }
+
+
 def test_public_content_and_pagination(client):
     assert client.get('/health').json() == {'status': 'ok'}
     assert client.get('/health/ready').status_code == 200

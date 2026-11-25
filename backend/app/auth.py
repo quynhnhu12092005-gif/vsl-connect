@@ -11,8 +11,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from app.dependencies import Db
-from app.models import User
-from app.schemas import AuthSessionOut, LoginInput, RegistrationInput
+from app.models import SeasonalAppearance, User
+from app.schemas import AuthSessionOut, LoginInput, RegistrationInput, SeasonalAppearanceOut
 from app.security import create_session, credential_version, hash_password, read_session, verify_password
 
 
@@ -119,6 +119,13 @@ def login(credentials: LoginInput, request: Request, response: Response, db: Db)
 @router.get('/me', response_model=AuthSessionOut)
 def me(request: Request, user: CurrentUser):
     return AuthSessionOut(user=user, csrf_token=request.state.session_claims['csrf'])
+
+
+@router.get('/seasonal-appearance', response_model=SeasonalAppearanceOut)
+def seasonal_appearance(response: Response, db: Db, _user: CurrentUser):
+    response.headers['Cache-Control'] = 'private, no-store'
+    settings = db.get(SeasonalAppearance, 1)
+    return settings or SeasonalAppearanceOut(winter_enabled=False, revision=0)
 
 
 @router.post('/logout', status_code=204)

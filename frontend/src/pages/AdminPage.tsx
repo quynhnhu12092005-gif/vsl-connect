@@ -189,7 +189,7 @@ export function AdminPage() {
             {tab === 'signs' && <SignManager csrfToken={session.csrf_token} openCreate={createTarget === 'signs'} onDialogClosed={closeCreateDialog} />}
             {tab === 'media' && <MediaManager csrfToken={session.csrf_token} />}
             {tab === 'users' && <UserManager csrfToken={session.csrf_token} currentUserId={session.user.id} openCreate={createTarget === 'users'} onDialogClosed={closeCreateDialog} />}
-            {tab === 'settings' && <AdminSettings />}
+            {tab === 'settings' && <AdminSettings csrfToken={session.csrf_token} />}
             {tab === 'system' && <SystemLog />}
           </div>
         </main>

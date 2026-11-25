@@ -55,6 +55,54 @@
 .cultural-home--heritage .cultural-edition { border-radius: .35rem; background: var(--theme-accent); color: white; }
 .cultural-home--heritage .cultural-journey { border-radius: .85rem; }
 .cultural-home--heritage .cultural-icon { border-radius: .65rem; background: rgb(var(--surface-low)); }
+.cultural-home--winter .cultural-home-grid { grid-template-areas: 'intro intro' 'explore explore'; }
+.cultural-home--winter .cultural-intro {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 44% minmax(0, 1fr);
+  align-items: center;
+  min-height: clamp(350px, 33vw, 450px);
+  overflow: hidden;
+  border: 1px solid rgb(var(--surface-border));
+  border-radius: 1rem;
+  background: rgb(var(--surface-card));
+}
+
+.cultural-home--winter .winter-hero-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-position: left 58%;
+}
+
+.cultural-home--winter .cultural-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 20%, rgb(var(--surface-card) / .96) 44%, rgb(var(--surface-card)) 100%);
+}
+
+.winter-hero-copy {
+  grid-column: 2;
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 3rem);
+}
+
+.site-shell .winter-hero-copy h1 {
+  margin: 0 0 .85rem;
+  max-width: 17ch;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.cultural-home--winter .cultural-primary { background: var(--accent-700); border-color: var(--accent-700); }
+.cultural-home--winter .cultural-actions a:focus-visible,
+.cultural-home--winter .cultural-journey:focus-visible { outline: 3px solid var(--text-accent); outline-offset: 3px; }
+.cultural-home--winter .cultural-journey,
+.cultural-home--winter .cultural-icon { border-radius: .875rem; }
 
 /* The home page uses a single top bar so the complete study frame stays in view. */
 :root[data-site-theme] .site-shell--compact-home { padding-left: 0; }
@@ -90,6 +138,22 @@
   .cultural-home--dongho .cultural-home-grid { padding: 1rem; }
   .cultural-artwork { height: 240px; }
   .cultural-section-heading > span { display: none; }
+  .cultural-home--winter .cultural-home-grid { grid-template-areas: 'intro' 'explore'; }
+  .cultural-home--winter .cultural-intro {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
+    min-height: 0;
+    padding-top: clamp(104px, 28vw, 164px);
+  }
+  .cultural-home--winter .winter-hero-scene {
+    inset-block-end: auto;
+    height: clamp(140px, 37vw, 216px);
+    background-position: left 65%;
+  }
+  .cultural-home--winter .cultural-intro::before {
+    background: linear-gradient(180deg, transparent 3.75rem, rgb(var(--surface-card)) clamp(104px, 28vw, 164px));
+  }
+  .winter-hero-copy { grid-column: 1; }
 }
 @media (max-width: 480px) {
   .cultural-actions { display: grid; grid-template-columns: minmax(0, 1fr); }

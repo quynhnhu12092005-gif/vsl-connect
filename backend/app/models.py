@@ -62,6 +62,13 @@ class AdminAuditLog(Base):
     __table_args__ = (CheckConstraint("action IN ('created', 'updated', 'deleted')", name='ck_admin_audit_action'),)
 
 
+class SeasonalAppearance(Base):
+    __tablename__ = 'seasonal_appearance'
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
+    winter_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
 class Course(Base):
     __tablename__ = 'courses'
     id: Mapped[int] = mapped_column(primary_key=True)

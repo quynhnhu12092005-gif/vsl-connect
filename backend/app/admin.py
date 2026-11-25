@@ -4,12 +4,12 @@ from typing import TypeVar
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.auth import AdminUser, AdminWriter
 from app.dependencies import Db, Limit, Offset
-from app.models import AdminAuditLog, Course, Enrollment, Lesson, LessonProgress, LessonSign, Quiz, QuizAttempt, ReviewSchedule, Sign, User
+from app.models import AdminAuditLog, Course, Enrollment, Lesson, LessonProgress, LessonSign, Quiz, QuizAttempt, ReviewSchedule, SeasonalAppearance, Sign, User
 from app.schemas import (
     AdminAuditLogOut,
     AdminCourseOut,
@@ -18,6 +18,8 @@ from app.schemas import (
     AdminSignOut,
     CourseInput,
     LessonInput,
+    SeasonalAppearanceInput,
+    SeasonalAppearanceOut,
     SignInput,
     UserCreate,
     UserOut,
@@ -28,6 +30,30 @@ from app.security import hash_password
 
 router = APIRouter(prefix='/api/v1/admin', tags=['administration'])
 Model = TypeVar('Model')
+
+
+@router.put('/seasonal-appearance', response_model=SeasonalAppearanceOut)
+def set_seasonal_appearance(payload: SeasonalAppearanceInput, db: Db, admin: AdminWriter):
+    changed = db.execute(
+        update(SeasonalAppearance)
+        .where(SeasonalAppearance.id == 1, SeasonalAppearance.winter_enabled != payload.winter_enabled)
+        .values(winter_enabled=payload.winter_enabled, revision=SeasonalAppearance.revision + 1)
+    )
+    settings = db.get(SeasonalAppearance, 1, with_for_update=True)
+    if settings is None:
+        raise HTTPException(status_code=503, detail='Cài đặt giao diện theo mùa chưa sẵn sàng.')
+    result = SeasonalAppearanceOut.model_validate(settings)
+    if changed.rowcount:
+        db.add(AdminAuditLog(
+            actor_id=admin.id,
+            actor_name=admin.display_name,
+            action='updated',
+            resource_type='seasonal_appearance',
+            resource_id=1,
+            resource_label='Bật giao diện Mùa đông' if payload.winter_enabled else 'Tắt giao diện Mùa đông',
+        ))
+    db.commit()
+    return result
 
 
 def get_or_404(db: Db, model_type: type[Model], item_id: int, label: str) -> Model:

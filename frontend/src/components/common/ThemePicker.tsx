@@ -1,16 +1,20 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { siteThemes } from '../../config/themes';
+import { personalThemes, siteThemes } from '../../config/themes';
 import { useTheme } from '../../context/ThemeContext';
 import { Icon } from '../ui/Icon';
 import { ThemeArtwork } from './ThemeArtwork';
 
 export function ThemeChoices({ compact = false }: { compact?: boolean }) {
-  const { siteTheme, setSiteTheme, canCustomize } = useTheme();
+  const { siteTheme, setSiteTheme, canCustomize, seasonalAppearance, followSeason } = useTheme();
   const group = useId();
   if (!canCustomize) return null;
   return <div className={`theme-choices grid gap-4 ${compact ? 'grid-cols-1 sm:grid-cols-2' : 'sm:grid-cols-2 xl:grid-cols-4'}`} role="group" aria-label="Chọn chủ đề giao diện">
-    {siteThemes.map((item) => <label key={item.id} className={`theme-choice ${item.id === 'default' ? `theme-choice--default ${compact ? 'sm:col-span-2' : 'sm:col-span-2 xl:col-span-4'}` : ''} group relative block cursor-pointer overflow-hidden rounded-2xl border-2 transition hover:-translate-y-1 ${siteTheme === item.id ? 'border-primary shadow-lift' : 'border-surface-border hover:border-primary'}`}>
+    {seasonalAppearance?.winter_enabled && <label className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border border-surface-border bg-surface-elevated p-3 ${compact ? 'sm:col-span-2' : 'sm:col-span-2 xl:col-span-4'}`}>
+      <input type="radio" name={group} value="winter" checked={siteTheme === 'winter'} onChange={followSeason} className="h-5 w-5 shrink-0 accent-[var(--theme-accent)]" />
+      <span><strong className="block text-sm">Theo mùa · Mùa đông</strong><span className="block text-xs leading-5 text-on-surface-variant">Dùng giao diện theo mùa đang được áp dụng.</span></span>
+    </label>}
+    {personalThemes.map((item) => <label key={item.id} className={`theme-choice ${item.id === 'default' ? `theme-choice--default ${compact ? 'sm:col-span-2' : 'sm:col-span-2 xl:col-span-4'}` : ''} group relative block cursor-pointer overflow-hidden rounded-2xl border-2 transition hover:-translate-y-1 ${siteTheme === item.id ? 'border-primary shadow-lift' : 'border-surface-border hover:border-primary'}`}>
       <input type="radio" name={group} value={item.id} checked={siteTheme === item.id} onChange={() => setSiteTheme(item.id)} className="peer sr-only" />
       <span className="pointer-events-none absolute inset-0 z-10 rounded-[14px] peer-focus-visible:ring-4 peer-focus-visible:ring-primary peer-focus-visible:ring-inset" />
       <div className={`theme-preview relative overflow-hidden ${compact ? 'h-32' : 'h-44'}`} style={{ '--art-primary': item.colors[0], '--art-blue': item.colors[1], '--art-gold': item.colors[2], '--art-paper': item.paper, '--art-ink': item.ink, '--art-soft': `${item.colors[0]}12`, backgroundColor: item.paper, color: item.ink } as CSSProperties}>
@@ -49,7 +53,7 @@ export function ThemePicker() {
       <div className="flex items-start justify-between gap-4 border-b border-surface-border px-5 py-5 sm:px-7"><div><p className="theme-eyebrow">BỘ SƯU TẬP GIAO DIỆN</p><h2 id={titleId} className="mt-2 font-sans text-3xl">Một chút Việt, theo cách bạn.</h2><p className="mt-2 text-sm leading-6 text-on-surface-variant">Chọn sắc màu cho toàn bộ không gian học của bạn.</p></div><button type="button" onClick={() => dialog.current?.close()} aria-label="Đóng bộ chọn giao diện" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-elevated hover:text-primary"><Icon name="close" /></button></div>
       <div className="p-5 sm:px-7"><ThemeChoices compact /><div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-surface-border bg-surface-elevated p-3"><span className="text-sm font-semibold">Chế độ hiển thị</span><div className="flex gap-1" role="group" aria-label="Chế độ sáng tối">{(['light', 'dark'] as const).map(mode => <button key={mode} type="button" aria-pressed={theme === mode} onClick={() => setTheme(mode)} className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${theme === mode ? 'bg-primary text-white' : 'text-on-surface-variant hover:bg-surface-card'}`}><Icon name={mode === 'light' ? 'light_mode' : 'dark_mode'} className="text-[18px]" />{mode === 'light' ? 'Sáng' : 'Tối'}</button>)}</div></div></div>
       <label className="mx-5 mb-5 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-surface-border p-4 sm:mx-7"><span><span className="block text-sm font-semibold">Chuyển động nền</span><span className="mt-1 block text-xs leading-6 text-on-surface-variant">Họa tiết và sắc màu chuyển động nhẹ theo chủ đề.</span></span><input type="checkbox" checked={backgroundMotion} onChange={event => setBackgroundMotion(event.target.checked)} className="h-5 w-5 shrink-0 accent-[var(--theme-accent)]" /></label>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-surface-border px-5 py-4 sm:px-7"><p aria-live="polite" role="status" className="text-xs text-on-surface-variant">Đã chọn {activeTheme.name} · Tự động lưu trên trình duyệt này</p><button type="button" onClick={() => dialog.current?.close()} className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary-container">Hoàn tất</button></div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-surface-border px-5 py-4 sm:px-7"><p role="status" className="text-xs text-on-surface-variant">{siteTheme === 'winter' ? 'Đang dùng giao diện theo mùa' : `Đã chọn ${activeTheme.name} · Tự động lưu trên trình duyệt này`}</p><button type="button" onClick={() => dialog.current?.close()} className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary-container">Hoàn tất</button></div>
     </dialog>, document.body)}
   </>;
 }

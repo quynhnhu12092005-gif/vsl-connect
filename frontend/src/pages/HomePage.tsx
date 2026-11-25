@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { ThemeIcon } from '../components/ui/ThemeIcon';
 import { ThemeArtwork } from '../components/common/ThemeArtwork';
+import { WinterArtwork } from '../components/common/WinterArtwork';
 import { siteThemes } from '../config/themes';
 import { useTheme } from '../context/ThemeContext';
 import { AnimatedBackdrop } from '../components/common/AnimatedBackdrop';
@@ -20,6 +21,7 @@ const layoutNotes = {
   puppets: { label: 'KHÔNG GIAN KHÁM PHÁ', title: 'Cùng bước vào một cuộc trò chuyện mới.', action: 'Hôm nay, bắt đầu từ đâu?', detail: 'Quan sát, thử sức và kết nối theo nhịp riêng của bạn.' },
   dongho: { label: 'MỖI NGÀY MỘT NÉT HỌC', title: 'Học bằng ánh mắt. Kể bằng đôi tay.', action: 'Những trang học đang mở', detail: 'Chậm một chút để nhìn rõ. Thực hành để nhớ lâu.' },
   heritage: { label: 'HÀNH TRÌNH KẾT NỐI', title: 'Mở một lối học. Gần nhau thêm chút.', action: 'Điểm đến tiếp theo của bạn', detail: 'Từ những ký hiệu đầu tiên đến những cuộc trò chuyện gần gũi.' },
+  winter: { label: '', title: 'Một mùa đông, thêm nhiều kết nối.', action: 'Tiếp tục học ký hiệu', detail: '' },
 };
 
 export function HomePage() {
@@ -27,26 +29,33 @@ export function HomePage() {
   if (siteTheme === 'default') return <DefaultHomePage />;
   const current = siteThemes.find(item => item.id === siteTheme)!;
   const note = layoutNotes[siteTheme];
+  const isWinter = siteTheme === 'winter';
+  const intro = <>
+    {note.label && <p className="theme-eyebrow"><span className="cultural-edition">{current.number}</span>{note.label}</p>}
+    <h1 id="home-title">{note.title}</h1>
+    <p className="cultural-description">Học cách lắng nghe bằng ánh mắt, kể chuyện bằng đôi tay — theo nhịp riêng của bạn.</p>
+    <div className="cultural-actions">
+      <Link to="/lo-trinh-hoc-tap" className="cultural-primary">Bắt đầu hành trình<Icon name="arrow_forward" /></Link>
+      <Link to="/tu-dien-ky-hieu" className="cultural-secondary"><ThemeIcon name="auto_stories" />Khám phá từ điển</Link>
+    </div>
+  </>;
   return <div className={`cultural-home cultural-home--${siteTheme}`}>
-    <AnimatedBackdrop variant="hero" />
+    {!isWinter && <AnimatedBackdrop variant="hero" />}
     <div className="cultural-home-grid">
       <section className="cultural-intro" aria-labelledby="home-title">
-        <p className="theme-eyebrow"><span className="cultural-edition">{current.number}</span>{note.label}</p>
-        <h1 id="home-title">{note.title}</h1>
-        <p className="cultural-description">Học cách lắng nghe bằng ánh mắt, kể chuyện bằng đôi tay — theo nhịp riêng của bạn.</p>
-        <div className="cultural-actions">
-          <Link to="/lo-trinh-hoc-tap" className="cultural-primary">Bắt đầu hành trình<Icon name="arrow_forward" /></Link>
-          <Link to="/tu-dien-ky-hieu" className="cultural-secondary"><ThemeIcon name="auto_stories" />Khám phá từ điển</Link>
-        </div>
+        {isWinter ? <>
+          <WinterArtwork className="winter-hero-scene" snowfall />
+          <div className="winter-hero-copy">{intro}</div>
+        </> : intro}
       </section>
-      <figure className="cultural-art">
+      {!isWinter && <figure className="cultural-art">
         <ThemeArtwork theme={siteTheme} className="cultural-artwork" />
         <figcaption><strong>{current.name}</strong><span>{current.motif}</span></figcaption>
-      </figure>
+      </figure>}
       <section className="cultural-explore" aria-labelledby="explore-title">
         <div className="cultural-section-heading"><h2 id="explore-title">{note.action}</h2><span>Chọn để bắt đầu<Icon name="arrow_forward" /></span></div>
         <div className="cultural-journeys">{journeys.map((item, index) => <Link key={item.to} to={item.to} className="cultural-journey">
-          <span className="cultural-journey-number" aria-hidden="true">0{index + 1}</span>
+          {siteTheme !== 'winter' && <span className="cultural-journey-number" aria-hidden="true">0{index + 1}</span>}
           <span className="cultural-icon"><ThemeIcon name={item.icon} /></span>
           <span className="cultural-journey-copy"><h3>{item.title}</h3><span className="sr-only">{item.description}</span></span>
           <Icon name="arrow_outward" className="cultural-journey-arrow" />

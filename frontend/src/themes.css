@@ -1,4 +1,4 @@
-/* Four cultural themes, shared by learner pages, account screens and admin.
+/* Cultural and seasonal themes shared by learner pages, account screens and admin.
    Accent/status colors remain separate so errors and AI feedback keep meaning. */
 :root {
   --theme-accent: #a72b69;
@@ -36,6 +36,20 @@
   --theme-ink: #382d26;
   --theme-pattern: repeating-linear-gradient(90deg, currentColor 0 10px, transparent 10px 14px, currentColor 14px 16px, transparent 16px 24px);
   --theme-radius: .875rem;
+}
+:root[data-site-theme='winter'] {
+  --theme-accent: #235b98;
+  --theme-secondary: #428da8;
+  --theme-gold: #ffd592;
+  --theme-paper: #edf7ff;
+  --theme-ink: #142e4e;
+  --theme-pattern: radial-gradient(circle at 3px 3px, currentColor 0 1px, transparent 1.5px);
+  --theme-radius: 1rem;
+  --surface-app: 237 247 255; --surface-card: 250 253 255; --surface-elevated: 226 240 252;
+  --surface-low: 232 244 253; --surface-high: 215 232 247; --surface-highest: 198 221 242;
+  --surface-border: 194 218 239; --text-primary: 20 46 78; --text-secondary: 61 83 109;
+  --outline: 88 112 140; --outline-variant: 155 184 214;
+  --secondary-container: 216 236 250; --on-secondary-container: 25 67 107;
 }
 :root {
   --accent-50: color-mix(in srgb, var(--theme-accent) 5%, var(--theme-paper));
@@ -85,6 +99,13 @@
 :root.dark[data-site-theme='puppets'] { --surface-app: 12 25 31; --surface-card: 20 36 44; --surface-elevated: 28 48 57; --surface-low: 24 42 51; --surface-border: 47 75 84; --secondary-container: 26 64 77; --on-secondary-container: 184 230 239; }
 :root.dark[data-site-theme='dongho'] { --surface-app: 28 26 20; --surface-card: 39 35 28; --surface-elevated: 50 44 34; --surface-low: 44 39 30; --surface-border: 80 67 49; --secondary-container: 77 44 30; --on-secondary-container: 249 211 173; }
 :root.dark[data-site-theme='heritage'] { --surface-app: 28 22 22; --surface-card: 40 31 30; --surface-elevated: 52 39 36; --surface-low: 45 33 31; --surface-border: 83 60 52; --secondary-container: 77 39 33; --on-secondary-container: 250 208 181; }
+:root.dark[data-site-theme='winter'] {
+  --surface-app: 11 24 43; --surface-card: 19 36 60; --surface-elevated: 26 48 74;
+  --surface-low: 22 41 66; --surface-high: 33 58 86; --surface-highest: 43 68 98;
+  --surface-border: 55 82 113; --text-primary: 239 249 255; --text-secondary: 181 205 227;
+  --outline: 139 169 197; --outline-variant: 65 94 124;
+  --secondary-container: 31 65 96; --on-secondary-container: 195 232 250;
+}
 
 body { background: rgb(var(--surface-app)); }
 ::selection { background: var(--theme-accent); color: white; }
@@ -94,6 +115,8 @@ input:-webkit-autofill { caret-color: var(--theme-accent); }
 .site-shell { background: rgb(var(--surface-app)); }
 .site-header { border-top: 4px solid var(--theme-accent); }
 .site-header::after, .site-footer::before { content: ''; display: block; height: 5px; color: var(--theme-accent); background-image: var(--theme-pattern); opacity: .2; }
+:root[data-site-theme='winter'] .site-header::after,
+:root[data-site-theme='winter'] .site-footer::before { background-size: 14px 6px; }
 .theme-eyebrow { color: var(--text-accent); font-size: 11px; font-weight: 700; letter-spacing: .1em; line-height: 1.8; }
 .theme-hero { background: rgb(var(--surface-app)); }
 .theme-hero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(var(--theme-gold) .6px, transparent .7px); background-size: 9px 9px; opacity: .12; }
@@ -109,7 +132,7 @@ input:-webkit-autofill { caret-color: var(--theme-accent); }
 .theme-dialog::backdrop { background: #10101888; backdrop-filter: blur(6px); }
 .theme-dialog { overscroll-behavior: contain; }
 .feature-banner-content { padding-top: 2.5rem; padding-bottom: 2.5rem; }
-.theme-banner-art > div { display: none; }
+.theme-banner-art > div:not(.winter-artwork) { display: none; }
 .site-shell main > div { background: transparent; }
 .site-shell article, .site-shell .journey-card { border-radius: var(--theme-radius); }
 .journey-card { background: rgb(var(--surface-card)); }

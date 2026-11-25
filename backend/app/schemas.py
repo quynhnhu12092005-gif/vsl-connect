@@ -167,6 +167,16 @@ class AuthSessionOut(BaseModel):
     csrf_token: str
 
 
+class SeasonalAppearanceInput(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    winter_enabled: bool = Field(strict=True)
+
+
+class SeasonalAppearanceOut(SeasonalAppearanceInput):
+    model_config = ConfigDict(from_attributes=True)
+    revision: int
+
+
 class AdminOverviewOut(BaseModel):
     courses: int
     lessons: int
