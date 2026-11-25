@@ -1,0 +1,8 @@
+.practice-page .practice-mode-indicator { background: var(--accent-700); }
+.practice-page [role='tab'][aria-selected='true'] { background: var(--accent-700); color: white; }
+.practice-page [role='tab'][aria-selected='false'] { color: rgb(var(--text-secondary)); }
+.practice-page [role='tab'] { min-width: 0; overflow-wrap: anywhere; }
+.practice-page [role='tabpanel'] { min-width: 0; }
+@media (max-width: 480px) {
+  .practice-page [role='tab'] { flex-direction: column; gap: .4rem; padding-inline: .5rem; font-size: .8rem; }
+}

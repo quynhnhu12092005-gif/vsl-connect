@@ -51,7 +51,8 @@ export function readRoomCode(value: string): string | null {
   return /^[A-HJ-NP-Z2-9]{10}$/.test(code) ? code : null;
 }
 
-export const roomPath = (code: string) => `/giao-tiep/phong/${code}`;
+export const ROOMS_PATH = '/giao-tiep/phong';
+export const roomPath = (code: string) => `${ROOMS_PATH}/${code}`;
 export const roomInvite = (code: string) => `${window.location.origin}${roomPath(code)}`;
 
 export function roomClientId(code: string): string {
@@ -70,13 +71,13 @@ export function rememberRoomClient(code: string, clientId: string) {
 }
 
 export function rememberRoomReturn(code?: string) {
-  try { sessionStorage.setItem('vsl-room-return', code ? roomPath(code) : '/giao-tiep'); } catch { /* user can reopen invite */ }
+  try { sessionStorage.setItem('vsl-room-return', code ? roomPath(code) : ROOMS_PATH); } catch { /* user can reopen invite */ }
 }
 
 export function takeRoomReturn(): string | null {
   try {
     const value = sessionStorage.getItem('vsl-room-return');
     sessionStorage.removeItem('vsl-room-return');
-    return value && /^\/giao-tiep(?:\/phong\/[A-HJ-NP-Z2-9]{10})?$/.test(value) ? value : null;
+    return value && /^\/giao-tiep(?:\/phong(?:\/[A-HJ-NP-Z2-9]{10})?)?$/.test(value) ? value : null;
   } catch { return null; }
 }

@@ -1,0 +1,9 @@
+.admin-app .bg-primary, .admin-dialog .bg-primary { background-color: var(--accent-700); }
+.admin-view-panel, .admin-view-panel section, .admin-view-panel .grid > * { min-width: 0; }
+.admin-view-panel :is(h2, h3), .admin-dialog h3 { overflow-wrap: anywhere; }
+.admin-app input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.admin-app :is(select, textarea), .admin-dialog :is(input, select, textarea) { border-color: rgb(var(--outline)); }
+.admin-app :is(input, textarea)::placeholder, .admin-dialog :is(input, textarea)::placeholder { color: rgb(var(--text-secondary)); }
+.admin-dialog :is(button, input:not([type='checkbox']), select, textarea) { min-height: 44px; }
+.admin-dialog :is(button, input, select, textarea):focus-visible { outline: 3px solid var(--text-accent); outline-offset: 2px; }
+.admin-app [role='region'][tabindex='0']:focus-visible { outline: 3px solid var(--text-accent); outline-offset: -3px; }

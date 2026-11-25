@@ -42,7 +42,7 @@ export function ThemePicker() {
   if (!canCustomize) return null;
 
   return <>
-    <button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label={`Chọn giao diện. Đang dùng ${activeTheme.name}`} title="Chọn giao diện" className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border border-surface-border bg-surface-card px-3 text-sm font-semibold text-on-surface transition hover:border-primary hover:text-primary">
+    <button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label={`Chọn giao diện. Đang dùng ${activeTheme.name}`} title="Chọn giao diện" className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-surface-border bg-surface-card px-3 text-sm font-semibold text-on-surface transition hover:border-primary hover:text-primary">
       <Icon name="palette" className="text-[20px] text-primary" /><span className="hidden sm:inline">Giao diện</span>
     </button>
     {open && createPortal(<dialog ref={dialog} aria-labelledby={titleId} onClose={() => setOpen(false)} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close(); }} className="theme-dialog m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-[760px] overflow-y-auto rounded-3xl border border-surface-border bg-surface-card p-0 text-on-surface shadow-modal backdrop:bg-black/55 backdrop:backdrop-blur-sm">

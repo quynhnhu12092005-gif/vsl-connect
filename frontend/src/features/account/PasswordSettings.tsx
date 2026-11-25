@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent } from 'react';
 import { apiRequest, changePassword, type AuthSession } from '../../services/adminApi';
 import { Icon } from '../../components/ui/Icon';
 
@@ -7,14 +7,17 @@ export function PasswordSettings({ session, onSaved }: { session: AuthSession; o
   const [current, setCurrent] = useState(''); const [password, setPassword] = useState(''); const [confirmation, setConfirmation] = useState('');
   const [code, setCode] = useState(''); const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [notice, setNotice] = useState('');
+  const errorId = useId();
+  const confirmationInput = useRef<HTMLInputElement>(null);
+  const [mismatch, setMismatch] = useState(false);
   async function sendCode() {
     setBusy(true); setError(''); setNotice('');
     try { const result = await apiRequest<{ detail: string }>('/profile/password/code', { method: 'POST', csrfToken: session.csrf_token }); setSent(true); setCode(''); setNotice(result.detail); }
     catch (err) { setError(err instanceof Error ? err.message : 'Không thể gửi mã.'); } finally { setBusy(false); }
   }
   async function submit(event: FormEvent) {
-    event.preventDefault(); setError(''); setNotice('');
-    if (password !== confirmation) { setError('Mật khẩu xác nhận không khớp.'); return; }
+    event.preventDefault(); setError(''); setNotice(''); setMismatch(false);
+    if (password !== confirmation) { setError('Mật khẩu xác nhận không khớp.'); setMismatch(true); confirmationInput.current?.focus(); return; }
     setBusy(true);
     try {
       const updated = await changePassword({ new_password: password, ...(emailMode ? { code } : { current_password: current }) }, session.csrf_token);
@@ -29,8 +32,8 @@ export function PasswordSettings({ session, onSaved }: { session: AuthSession; o
       {emailMode ? <><p className="account-field-hint">Mã sẽ được gửi đến email tài khoản. Có hiệu lực 10 phút, tối đa 5 lần thử.</p><button type="button" className="account-button account-button--quiet" onClick={sendCode}>{sent ? 'Yêu cầu mã mới' : 'Gửi mã xác thực'}</button>{sent && <label>Mã xác thực đổi mật khẩu<input required inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={code} onChange={event => setCode(event.target.value.replace(/\D/g, ''))} /></label>}</>
         : <label>Mật khẩu hiện tại<input required type="password" autoComplete="current-password" maxLength={128} value={current} onChange={event => setCurrent(event.target.value)} /></label>}
       <label>Mật khẩu mới<input required type="password" autoComplete="new-password" minLength={12} maxLength={128} value={password} onChange={event => setPassword(event.target.value)} /></label>
-      <label>Xác nhận mật khẩu mới<input required type="password" autoComplete="new-password" minLength={12} maxLength={128} value={confirmation} onChange={event => setConfirmation(event.target.value)} /></label>
+      <label>Xác nhận mật khẩu mới<input ref={confirmationInput} aria-invalid={mismatch || undefined} aria-describedby={error ? errorId : undefined} required type="password" autoComplete="new-password" minLength={12} maxLength={128} value={confirmation} onChange={event => setConfirmation(event.target.value)} /></label>
       <button type="submit" disabled={emailMode && (!sent || code.length !== 6)} className="account-button">{busy ? 'Đang cập nhật…' : 'Lưu mật khẩu'}</button>
-    </fieldset>{error && <p role="alert" className="account-message account-message--error">{error}</p>}{notice && <p role="status" className="account-message">{notice}</p>}</form>
+    </fieldset>{error && <p id={errorId} role="alert" className="account-message account-message--error">{error}</p>}{notice && <p role="status" className="account-message">{notice}</p>}</form>
   </section>;
 }

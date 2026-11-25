@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import vslLogo from '../../assets/vsl-connect-logo.png';
+import vslLogo from '../../assets/vsl-connect-logo-nav.png';
 import { useAdminResource, type AuthSession } from '../../services/adminApi';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { ThemePicker } from '../common/ThemePicker';
@@ -36,7 +36,7 @@ export function TopNav() {
     <header className="site-header sticky top-0 z-50 border-b border-slate-200/90 bg-surface-card/95 text-slate-950 shadow-[0_5px_20px_-18px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/90 dark:text-white">
       <div className="site-header-inner mx-auto flex min-h-[76px] max-w-[1440px] items-center gap-3 px-4 sm:px-6 lg:px-8 xl:px-12">
         <Link to="/" aria-label="VSL Connect — Trang chủ" className="site-brand group inline-flex shrink-0 items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2">
-          <img src={vslLogo} alt="" className="h-11 w-11 object-contain transition-transform duration-200 group-hover:scale-[1.04]" />
+          <img src={vslLogo} alt="" width={44} height={44} className="h-11 w-11 object-contain transition-transform duration-200 group-hover:scale-[1.04]" />
           <span className="hidden text-[21px] font-bold tracking-[-0.045em] text-slate-950 dark:text-white sm:block">VSL <span className="text-emerald-600 dark:text-emerald-400">Connect</span></span>
         </Link>
 
@@ -67,7 +67,7 @@ export function TopNav() {
               <Icon name="login" className="text-[18px]" /><span className="hidden sm:inline">Đăng nhập</span>
             </Link>
           )}
-          <button type="button" aria-label={menuOpen ? 'Đóng điều hướng' : 'Mở điều hướng'} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 xl:hidden"><Icon name={menuOpen ? 'close' : 'menu'} /></button>
+          <button type="button" aria-label={menuOpen ? 'Đóng điều hướng' : 'Mở điều hướng'} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)} className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 xl:hidden"><Icon name={menuOpen ? 'close' : 'menu'} /></button>
         </div>
       </div>
 

@@ -418,17 +418,17 @@ export function SignDetectionCamera({ mode = 'video', autoStartCamera = false, d
 
       <section aria-labelledby="recognition-mode-title" className="border-b border-gray-100 p-4 dark:border-slate-800 sm:p-5">
         {!cameraActive && isVideoMode && <div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-4 text-center dark:border-sky-400/20 dark:bg-sky-400/5 sm:p-5">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm"><Icon name="video_file" className="text-[24px]" /></span>
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-sky-700 text-white shadow-sm"><Icon name="video_file" className="text-[24px]" /></span>
           <h3 id="recognition-mode-title" className="mt-3 text-base font-semibold text-gray-900 dark:text-white">Nhận diện bằng video</h3>
           <p className="mx-auto mt-1 max-w-lg text-sm leading-6 text-gray-600 dark:text-gray-300">Tải video có động tác tay rõ trong ít nhất 2 giây để hệ thống đối chiếu ký hiệu.</p>
-          <button type="button" onClick={() => uploadInputRef.current?.click()} disabled={starting} className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-slate-900"><Icon name="upload_file" className="text-[19px]" />{starting ? 'Đang chuẩn bị video...' : 'Tải video lên để nhận diện'}</button>
+          <button type="button" onClick={() => uploadInputRef.current?.click()} disabled={starting} className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-slate-900"><Icon name="upload_file" className="text-[19px]" />{starting ? 'Đang chuẩn bị video...' : 'Tải video lên để nhận diện'}</button>
         </div>}
 
         {!cameraActive && !isVideoMode && <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-center dark:border-emerald-400/20 dark:bg-emerald-400/5 sm:p-5">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm"><Icon name="videocam" className="text-[24px]" /></span>
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm"><Icon name="videocam" className="text-[24px]" /></span>
           <h3 id="recognition-mode-title" className="mt-3 text-base font-semibold text-gray-900 dark:text-white">Nhận diện bằng camera</h3>
           <p className="mx-auto mt-1 max-w-lg text-sm leading-6 text-gray-600 dark:text-gray-300">Cho phép truy cập webcam và đặt tay trong khung hình để nhận diện trực tiếp.</p>
-          <button type="button" onClick={() => void activateCamera()} disabled={starting || !hasCameraSupport} className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-slate-900"><Icon name="photo_camera" className="text-[19px]" />{starting ? 'Đang mở camera...' : 'Mở camera'}</button>
+          <button type="button" onClick={() => void activateCamera()} disabled={starting || !hasCameraSupport} className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-slate-900"><Icon name="photo_camera" className="text-[19px]" />{starting ? 'Đang mở camera...' : 'Mở camera'}</button>
           {!hasCameraSupport && <p role="alert" className="mt-3 text-sm text-amber-800 dark:text-amber-200">Trình duyệt này không hỗ trợ Camera API hoặc trang chưa được mở qua HTTPS.</p>}
         </div>}
 
@@ -454,16 +454,16 @@ export function SignDetectionCamera({ mode = 'video', autoStartCamera = false, d
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <button type="button" onClick={() => void activateCamera()} disabled={starting || !hasCameraSupport} className="group rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-left transition hover:border-emerald-400 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-emerald-400/20 dark:bg-emerald-400/5 dark:hover:bg-emerald-400/10">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm"><Icon name="videocam" className="text-[22px]" /></span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm"><Icon name="videocam" className="text-[22px]" /></span>
             <span className="mt-4 block text-sm font-semibold text-gray-900 dark:text-white">Mở camera để nhận diện</span>
             <span className="mt-1 block text-xs leading-5 text-gray-600 dark:text-gray-300">Sử dụng webcam để nhận diện ký hiệu trực tiếp.</span>
-            <span className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white group-hover:bg-emerald-700"><Icon name="photo_camera" className="text-[18px]" />Mở camera</span>
+            <span className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-700 px-3 py-2 text-xs font-semibold text-white group-hover:bg-emerald-800"><Icon name="photo_camera" className="text-[18px]" />Mở camera</span>
           </button>
           <button type="button" onClick={() => uploadInputRef.current?.click()} disabled={starting} className="group rounded-2xl border border-sky-200 bg-sky-50/70 p-4 text-left transition hover:border-sky-400 hover:bg-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-sky-400/20 dark:bg-sky-400/5 dark:hover:bg-sky-400/10">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm"><Icon name="video_file" className="text-[22px]" /></span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-700 text-white shadow-sm"><Icon name="video_file" className="text-[22px]" /></span>
             <span className="mt-4 block text-sm font-semibold text-gray-900 dark:text-white">Tải video để nhận diện</span>
             <span className="mt-1 block text-xs leading-5 text-gray-600 dark:text-gray-300">Chọn video có tay rõ trong ít nhất 2 giây. Video được xử lý trên thiết bị.</span>
-            <span className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl bg-sky-600 px-3 py-2 text-xs font-semibold text-white group-hover:bg-sky-700"><Icon name="upload_file" className="text-[18px]" />Chọn video</span>
+            <span className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl bg-sky-700 px-3 py-2 text-xs font-semibold text-white group-hover:bg-sky-800"><Icon name="upload_file" className="text-[18px]" />Chọn video</span>
           </button>
         </div>
         {conversionCandidate && <div role="status" className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left dark:border-amber-400/25 dark:bg-amber-400/10">
@@ -525,7 +525,7 @@ export function SignDetectionCamera({ mode = 'video', autoStartCamera = false, d
       {isUploadedVideo && <section aria-labelledby="uploaded-video-result-title" aria-live="polite" className="border-t border-sky-100 bg-sky-50/70 px-4 py-4 dark:border-sky-400/15 dark:bg-sky-400/5 sm:px-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm"><Icon name="sign_language" className="text-[21px]" /></span>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-700 text-white shadow-sm"><Icon name="sign_language" className="text-[21px]" /></span>
             <div className="min-w-0">
               <p id="uploaded-video-result-title" className="text-xs font-semibold uppercase tracking-[0.1em] text-sky-800 dark:text-sky-200">Kết quả nhận diện video</p>
               <p className="mt-1 truncate text-lg font-bold text-slate-900 dark:text-white">{recognitionResult}</p>

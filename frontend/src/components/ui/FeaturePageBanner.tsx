@@ -18,7 +18,7 @@ export function FeaturePageBanner({ eyebrow, title, description, icon, children 
     <section className="feature-page-banner relative isolate overflow-hidden border-b border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-teal-50 dark:border-emerald-400/10 dark:from-emerald-950/45 dark:via-slate-950 dark:to-teal-950/35">
       <AnimatedBackdrop variant="banner" />
       <div aria-hidden="true" className="theme-banner-art pointer-events-none absolute inset-0 overflow-hidden">
-        <ThemeArtwork theme={siteTheme} className="absolute -bottom-9 right-4 hidden h-56 w-80 opacity-25 lg:block" />
+        {siteTheme !== 'default' && <ThemeArtwork theme={siteTheme} className="absolute -bottom-9 right-4 hidden h-56 w-80 opacity-25 lg:block" />}
         <div className="absolute -right-20 bottom-[-7rem] h-52 w-[46rem] rounded-[50%] bg-emerald-200/70 blur-2xl dark:bg-emerald-400/10" />
         <div className="absolute right-[15%] top-[-12rem] h-64 w-64 rounded-full bg-teal-100/80 blur-3xl dark:bg-teal-400/5" />
       </div>

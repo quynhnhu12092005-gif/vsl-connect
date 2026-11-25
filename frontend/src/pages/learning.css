@@ -1,0 +1,8 @@
+.learning-page .learning-filters > label { border-color: rgb(var(--outline)); }
+.learning-page .learning-filters input::placeholder { color: rgb(var(--text-secondary)); }
+.learning-page .learning-filters :is(input, select):focus-visible { outline: 3px solid var(--text-accent); outline-offset: 2px; }
+.learning-page .feature-result-grid :is(h3, p), .course-page :is(h1, h3, p) { overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .learning-filters { flex-direction: column; }
+  .learning-filters > label, .learning-filters select { width: 100%; max-width: none; }
+}

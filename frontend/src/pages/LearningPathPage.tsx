@@ -5,6 +5,7 @@ import { Icon } from '../components/ui/Icon';
 import { ThemeIcon } from '../components/ui/ThemeIcon';
 import { Pagination } from '../components/ui/Pagination';
 import { type Course, useApi } from '../services/api';
+import './learning.css';
 
 const PAGE_SIZE = 20;
 
@@ -31,7 +32,7 @@ export function LearningPathPage() {
   }), [courses, difficulty, search]);
 
   return (
-    <div id="learning-overview" className="overflow-hidden bg-surface-card pb-14 dark:bg-slate-950 sm:pb-18">
+    <div id="learning-overview" className="learning-page overflow-hidden bg-surface-card pb-14 dark:bg-slate-950 sm:pb-18">
       <section className="feature-page-banner relative overflow-hidden border-b border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-teal-50 dark:border-emerald-400/10 dark:from-emerald-950/45 dark:via-slate-950 dark:to-teal-950/35">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-20 bottom-[-7rem] h-52 w-[46rem] rounded-[50%] bg-emerald-200/70 blur-2xl dark:bg-emerald-400/10" />
@@ -46,7 +47,7 @@ export function LearningPathPage() {
       <div className="feature-workspace mx-auto grid max-w-[1440px] gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[242px_minmax(0,1fr)] lg:px-12 lg:py-10 xl:px-16">
         <aside className="lg:sticky lg:top-24 lg:h-fit">
           <nav aria-label="Điều hướng lộ trình" className="grid grid-cols-3 gap-2 border-b border-slate-200 pb-4 dark:border-slate-800 lg:block lg:rounded-xl lg:border lg:border-slate-200 lg:bg-surface-card lg:p-3 lg:shadow-[0_14px_28px_-24px_rgba(15,23,42,0.5)] dark:lg:border-slate-800 dark:lg:bg-slate-900">
-            {sideNavigation.map((item, index) => <button key={item.target} type="button" onClick={() => scrollToSection(item.target)} className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 lg:mb-1 lg:w-full lg:justify-start ${index === 0 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'}`}><Icon name={item.icon} className="text-[20px]" /><span className="hidden sm:inline lg:inline">{item.label}</span></button>)}
+            {sideNavigation.map((item, index) => <button key={item.target} type="button" aria-label={item.label} onClick={() => scrollToSection(item.target)} className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 lg:mb-1 lg:w-full lg:justify-start ${index === 0 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'}`}><Icon name={item.icon} className="text-[20px]" /><span className="hidden sm:inline lg:inline">{item.label}</span></button>)}
           </nav>
         </aside>
 
@@ -54,9 +55,9 @@ export function LearningPathPage() {
           <section id="course-list" className="scroll-mt-28" aria-labelledby="course-list-title">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div><p className="text-sm font-bold text-emerald-700 dark:text-emerald-300">Học theo từng bước</p><h2 id="course-list-title" className="mt-1 text-3xl font-semibold tracking-[0.01em] text-slate-950 dark:text-white">Danh sách khóa học</h2></div>
-              <div className="flex w-full gap-2 sm:w-auto">
+              <div className="learning-filters flex w-full gap-2 sm:w-auto">
                 <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-surface-card px-3 shadow-sm focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-900 sm:w-72"><Icon name="search" className="text-[20px] text-slate-500 dark:text-slate-400" /><input value={search} onChange={(event) => { setSearch(event.target.value); setOffset(0); }} className="min-w-0 flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-500" placeholder="Tìm khóa học..." aria-label="Tìm khóa học" /></label>
-                <label className="relative inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-surface-card text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"><Icon name="filter_list" className="pointer-events-none ml-3 text-[20px]" /><select value={difficulty} onChange={(event) => { setDifficulty(event.target.value); setOffset(0); }} className="h-full max-w-28 appearance-none bg-transparent py-2 pl-2 pr-8 text-sm font-semibold focus:outline-none"><option value="">Tất cả</option>{levels.map((level) => <option key={level} value={level}>{level}</option>)}</select><Icon name="keyboard_arrow_down" className="pointer-events-none absolute right-2 text-[18px]" /></label>
+                <label className="relative inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-surface-card text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"><Icon name="filter_list" className="pointer-events-none ml-3 text-[20px]" /><select aria-label="Lọc theo trình độ" value={difficulty} onChange={(event) => { setDifficulty(event.target.value); setOffset(0); }} className="h-full max-w-28 appearance-none bg-transparent py-2 pl-2 pr-8 text-sm font-semibold focus:outline-none"><option value="">Tất cả</option>{levels.map((level) => <option key={level} value={level}>{level}</option>)}</select><Icon name="keyboard_arrow_down" className="pointer-events-none absolute right-2 text-[18px]" /></label>
               </div>
             </div>
 
@@ -67,7 +68,7 @@ export function LearningPathPage() {
           </section>
 
           <section id="learning-progress" className="mt-9 scroll-mt-28 rounded-xl border border-slate-200 bg-surface-card p-5 shadow-[0_14px_28px_-24px_rgba(15,23,42,0.45)] dark:border-slate-800 dark:bg-slate-900 sm:p-6" aria-labelledby="learning-progress-title">
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(25rem,0.8fr)] lg:items-center">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center">
               <div><div className="flex items-center justify-between gap-4"><div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300"><Icon name="track_changes" className="text-[23px]" /></span><div><h2 id="learning-progress-title" className="text-xl font-semibold text-slate-950 dark:text-white">Tiến độ học tập</h2><p className="text-sm text-slate-500 dark:text-slate-400">Bắt đầu một khóa học để theo dõi tiến độ.</p></div></div><strong className="text-xl font-semibold text-emerald-700 dark:text-emerald-300">0%</strong></div><div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div className="h-full w-0 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400" /></div></div>
               <div className="grid grid-cols-3 divide-x divide-slate-200 border-t border-slate-200 pt-5 dark:divide-slate-800 dark:border-slate-800 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0"><div className="px-2 first:pl-0"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300"><Icon name="menu_book" className="text-[20px]" /></span><strong className="mt-2 block text-xl text-slate-950 dark:text-white">{courses?.length ?? 0}</strong><span className="text-xs font-medium text-slate-500 dark:text-slate-400">Khóa học</span></div><div className="px-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300"><Icon name="smart_display" className="text-[20px]" /></span><strong className="mt-2 block text-xl text-slate-950 dark:text-white">0</strong><span className="text-xs font-medium text-slate-500 dark:text-slate-400">Bài học</span></div><div className="px-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300"><Icon name="task_alt" className="text-[20px]" /></span><strong className="mt-2 block text-xl text-slate-950 dark:text-white">0</strong><span className="text-xs font-medium text-slate-500 dark:text-slate-400">Hoàn thành</span></div></div>
             </div>

@@ -2,7 +2,7 @@
 
 ## Chức năng
 
-Mở **Giao tiếp** sau khi đăng nhập để tạo phòng công khai hoặc riêng tư. Phòng có tối đa **6 tài khoản**, tham gia bằng mã 10 ký tự hoặc link `/giao-tiep/phong/{code}`. Phòng riêng tư không xuất hiện trong danh sách; ai có lời mời và tài khoản đều có thể tham gia. Không có chat, ghi hình hay tải video cuộc gọi lên Cloudinary.
+Mở **Giao tiếp → Phòng gọi video** (`/giao-tiep/phong`) sau khi đăng nhập để tạo phòng công khai hoặc riêng tư. Phần tạo, tìm và danh sách phòng nằm ở trang riêng; trang **Công cụ giao tiếp** giữ từ vựng và chuyển văn bản thành giọng nói. Phòng có tối đa **6 tài khoản**, tham gia bằng mã 10 ký tự hoặc link `/giao-tiep/phong/{code}`. Link mời cũ vẫn hoạt động. Phòng riêng tư không xuất hiện trong danh sách; ai có lời mời và tài khoản đều có thể tham gia. Không có chat, ghi hình hay tải video cuộc gọi lên Cloudinary.
 
 Người tạo vào phòng với camera/micro tắt. Người nhận lời mời chọn thiết bị trước khi vào. Có thể bật/tắt camera, micro, giơ tay, ghim video, xem toàn màn hình và kết nối lại. Khi tắt thiết bị hoặc rời phòng, ứng dụng dừng track camera/micro.
 

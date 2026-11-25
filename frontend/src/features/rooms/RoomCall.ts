@@ -1,4 +1,5 @@
 import { ApiError, type AuthSession } from '../../services/adminApi';
+import { requestRoomDevice, startRoomDevices } from './roomMedia';
 import { joinRoom, leaveRoom, roomIce, sendRoomSignal, syncRoom,
   type MediaFlags, type Participant, type RoomSignal, type RoomState, type SignalKind } from './roomApi';
 
@@ -38,33 +39,25 @@ export class RoomCall {
     if (!window.isSecureContext || typeof RTCPeerConnection === 'undefined') {
       throw new Error('Trình duyệt chưa hỗ trợ cuộc gọi tại địa chỉ này. Hãy mở website qua HTTPS.');
     }
+    // Start permission requests directly from the join action, before network
+    // requests. Publish each available device even if the other device fails.
+    const failures = await startRoomDevices(camera, microphone, stream => {
+      if (this.closed) { stream.getTracks().forEach(track => track.stop()); return; }
+      stream.getTracks().forEach(track => this.attachLocalTrack(track));
+      this.publishLocal();
+    });
+    if (this.closed) return;
+    if (failures.length) this.events.notice(failures.join(' '));
+    this.publishLocal();
     const ice = await roomIce();
     if (this.closed) return;
     this.iceServers = ice.ice_servers;
     this.scheduleIceRefresh(ice.expires_in);
-    if (camera || microphone) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: camera ? this.videoConstraints() : false,
-          audio: microphone ? { echoCancellation: true, noiseSuppression: true } : false,
-        });
-        if (this.closed) { stream.getTracks().forEach(track => track.stop()); return; }
-        stream.getTracks().forEach(track => this.attachLocalTrack(track));
-      } catch {
-        if (!this.closed) this.events.notice('Chưa truy cập được camera/micro. Bạn vẫn có thể xem mọi người và bật thiết bị sau.');
-      }
-    }
-    this.publishLocal();
     const state = await joinRoom(this.code, this.clientId, this.session);
     if (this.closed) { void leaveRoom(this.code, this.clientId, this.session).catch(() => undefined); return; }
     this.lastSuccess = Date.now();
     await this.applySnapshot(state);
     if (!this.closed) this.schedule(100);
-  }
-
-  private videoConstraints(): MediaTrackConstraints {
-    return { width: { ideal: 960, max: 1280 }, height: { ideal: 540, max: 720 },
-      frameRate: { ideal: 20, max: 24 }, facingMode: 'user' };
   }
 
   private scheduleIceRefresh(ttl: number) {
@@ -113,10 +106,7 @@ export class RoomCall {
         (kind === 'video' ? peer.video : peer.audio)?.replaceTrack(null).catch(() => undefined)));
     } else {
       if (!navigator.mediaDevices?.getUserMedia) throw new Error('Không truy cập được camera/micro. Hãy kiểm tra quyền trình duyệt.');
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: kind === 'video' ? this.videoConstraints() : false,
-        audio: kind === 'audio' ? { echoCancellation: true, noiseSuppression: true } : false,
-      });
+      const stream = await requestRoomDevice(kind);
       if (this.closed) { stream.getTracks().forEach(track => track.stop()); return; }
       for (const track of stream.getTracks()) {
         this.attachLocalTrack(track);

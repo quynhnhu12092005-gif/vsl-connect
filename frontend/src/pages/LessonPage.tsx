@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { SignDetectionCamera } from '../components/camera/SignDetectionCamera';
 import { FeaturePageBanner } from '../components/ui/FeaturePageBanner';
 import { Icon } from '../components/ui/Icon';
+import './practice.css';
 
 type RecognitionMode = 'video' | 'camera';
 
@@ -14,9 +15,22 @@ const practiceTips = [
 export function LessonPage() {
   const [recognitionMode, setRecognitionMode] = useState<RecognitionMode>('video');
   const isVideoMode = recognitionMode === 'video';
+  function moveTabFocus(event: KeyboardEvent<HTMLDivElement>) {
+    const tabs = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const current = tabs.indexOf(document.activeElement as HTMLButtonElement);
+    if (current < 0) return;
+    let next: number;
+    if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+    else if (event.key === 'ArrowLeft') next = (current + tabs.length - 1) % tabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = tabs.length - 1;
+    else return;
+    event.preventDefault();
+    tabs[next]?.focus();
+  }
 
   return (
-    <div className="overflow-hidden bg-surface-card pb-14 dark:bg-slate-950 sm:pb-18">
+    <div className="practice-page overflow-hidden bg-surface-card pb-14 dark:bg-slate-950 sm:pb-18">
       <FeaturePageBanner eyebrow="Luyện tập trực quan" title="Luyện tập ký hiệu" description="Tải video để nhận diện ký hiệu, hoặc chuyển sang camera để thực hành trực tiếp." icon="sign_language" />
       <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-8 sm:px-8 lg:grid-cols-[242px_minmax(0,1fr)] lg:px-12 lg:py-10 xl:px-16">
         <aside className="lg:sticky lg:top-24 lg:h-fit">
@@ -35,10 +49,10 @@ export function LessonPage() {
             <h2 className="mt-1 text-3xl font-semibold tracking-[0.01em] text-slate-950 dark:text-white">{isVideoMode ? 'Nhận diện bằng video' : 'Nhận diện bằng camera'}</h2>
           </div>
 
-          <div role="tablist" aria-label="Chế độ nhận diện" className="relative mb-5 grid grid-cols-2 gap-1.5 rounded-2xl border border-emerald-200 practice-mode-tabs p-1.5 shadow-[0_12px_30px_-24px_rgba(5,150,105,0.72)] dark:border-emerald-400/20 dark:bg-slate-900">
+          <div role="tablist" aria-label="Chế độ nhận diện" onKeyDown={moveTabFocus} className="relative mb-5 grid grid-cols-2 gap-1.5 rounded-2xl border border-emerald-200 practice-mode-tabs p-1.5 shadow-[0_12px_30px_-24px_rgba(5,150,105,0.72)] dark:border-emerald-400/20 dark:bg-slate-900">
             <span aria-hidden="true" className={`pointer-events-none absolute inset-y-1.5 left-1.5 w-[calc(50%-0.5625rem)] rounded-xl practice-mode-indicator shadow-[0_8px_20px_-10px_rgba(13,148,136,0.9)] transition-transform duration-300 ease-out ${isVideoMode ? 'translate-x-0' : 'translate-x-[calc(100%+0.375rem)]'}`} />
-            <button id="video-recognition-tab" type="button" role="tab" aria-selected={isVideoMode} aria-controls="video-recognition-panel" onClick={() => setRecognitionMode('video')} className={`relative z-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-bold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${isVideoMode ? 'text-white' : 'text-sky-900/70 hover:text-sky-950 dark:text-sky-100/75 dark:hover:text-white'}`}><span className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-300 ${isVideoMode ? 'bg-surface-card/20 text-white' : 'bg-sky-100/80 text-sky-700 dark:bg-surface-card/10 dark:text-sky-200'}`}><Icon name="video_file" className="text-[18px]" /></span>Nhận diện bằng video</button>
-            <button id="camera-recognition-tab" type="button" role="tab" aria-selected={!isVideoMode} aria-controls="camera-recognition-panel" onClick={() => setRecognitionMode('camera')} className={`relative z-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-bold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${!isVideoMode ? 'text-white' : 'text-sky-900/70 hover:text-sky-950 dark:text-sky-100/75 dark:hover:text-white'}`}><span className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-300 ${!isVideoMode ? 'bg-surface-card/20 text-white' : 'bg-sky-100/80 text-sky-700 dark:bg-surface-card/10 dark:text-sky-200'}`}><Icon name="videocam" className="text-[18px]" /></span>Nhận diện bằng camera</button>
+            <button id="video-recognition-tab" type="button" role="tab" tabIndex={isVideoMode ? 0 : -1} aria-selected={isVideoMode} aria-controls="video-recognition-panel" onClick={() => setRecognitionMode('video')} className={`relative z-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-bold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${isVideoMode ? 'text-white' : 'text-sky-900/70 hover:text-sky-950 dark:text-sky-100/75 dark:hover:text-white'}`}><span className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-300 ${isVideoMode ? 'bg-surface-card/20 text-white' : 'bg-sky-100/80 text-sky-700 dark:bg-surface-card/10 dark:text-sky-200'}`}><Icon name="video_file" className="text-[18px]" /></span>Nhận diện bằng video</button>
+            <button id="camera-recognition-tab" type="button" role="tab" tabIndex={!isVideoMode ? 0 : -1} aria-selected={!isVideoMode} aria-controls="camera-recognition-panel" onClick={() => setRecognitionMode('camera')} className={`relative z-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-bold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${!isVideoMode ? 'text-white' : 'text-sky-900/70 hover:text-sky-950 dark:text-sky-100/75 dark:hover:text-white'}`}><span className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-300 ${!isVideoMode ? 'bg-surface-card/20 text-white' : 'bg-sky-100/80 text-sky-700 dark:bg-surface-card/10 dark:text-sky-200'}`}><Icon name="videocam" className="text-[18px]" /></span>Nhận diện bằng camera</button>
           </div>
 
           <div id={isVideoMode ? 'video-recognition-panel' : 'camera-recognition-panel'} role="tabpanel" aria-labelledby={isVideoMode ? 'video-recognition-tab' : 'camera-recognition-tab'}>

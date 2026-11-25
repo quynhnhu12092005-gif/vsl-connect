@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-25T07:34:02.979Z",
+  "title": "Design System: VSL Connect",
+  "extensions": {
+    "colorMeta": {
+      "default-accent": {
+        "role": "primary",
+        "displayName": "Xanh ngọc",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#34d399",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "patterns-accent": {
+        "role": "primary",
+        "displayName": "Hồng sen",
+        "tonalRamp": [
+          "color-mix(in srgb, #a72b69 20%, #0b1019)",
+          "color-mix(in srgb, #a72b69 45%, #342333)",
+          "color-mix(in srgb, #a72b69 68%, black)",
+          "color-mix(in srgb, #a72b69 84%, black)",
+          "#a72b69",
+          "color-mix(in srgb, #a72b69 65%, white)",
+          "color-mix(in srgb, #a72b69 24%, white)",
+          "color-mix(in srgb, #a72b69 5%, #fff8f3)"
+        ]
+      },
+      "puppets-accent": {
+        "role": "primary",
+        "displayName": "Xanh nước",
+        "tonalRamp": [
+          "color-mix(in srgb, #146b83 20%, #0b1019)",
+          "color-mix(in srgb, #146b83 45%, #163842)",
+          "color-mix(in srgb, #146b83 68%, black)",
+          "color-mix(in srgb, #146b83 84%, black)",
+          "#146b83",
+          "color-mix(in srgb, #146b83 65%, white)",
+          "color-mix(in srgb, #146b83 24%, white)",
+          "color-mix(in srgb, #146b83 5%, #f2f9f8)"
+        ]
+      },
+      "dongho-accent": {
+        "role": "primary",
+        "displayName": "Đỏ gạch",
+        "tonalRamp": [
+          "color-mix(in srgb, #aa402b 20%, #0b1019)",
+          "color-mix(in srgb, #aa402b 45%, #383326)",
+          "color-mix(in srgb, #aa402b 68%, black)",
+          "color-mix(in srgb, #aa402b 84%, black)",
+          "#aa402b",
+          "color-mix(in srgb, #aa402b 65%, white)",
+          "color-mix(in srgb, #aa402b 24%, white)",
+          "color-mix(in srgb, #aa402b 5%, #f8f1de)"
+        ]
+      },
+      "heritage-accent": {
+        "role": "primary",
+        "displayName": "Đỏ son",
+        "tonalRamp": [
+          "color-mix(in srgb, #ae382d 20%, #0b1019)",
+          "color-mix(in srgb, #ae382d 45%, #382d26)",
+          "color-mix(in srgb, #ae382d 68%, black)",
+          "color-mix(in srgb, #ae382d 84%, black)",
+          "#ae382d",
+          "color-mix(in srgb, #ae382d 65%, white)",
+          "color-mix(in srgb, #ae382d 24%, white)",
+          "color-mix(in srgb, #ae382d 5%, #fff8e9)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline-xl": {
+        "displayName": "Tiêu đề lớn",
+        "purpose": "Utility chung; các phạm vi và route có ghi đè theo DESIGN.md."
+      },
+      "body-md": {
+        "displayName": "Nội dung",
+        "purpose": "Utility chung 14/20; đoạn văn trong site shell có line-height ghi đè."
+      },
+      "code-sm": {
+        "displayName": "Mã",
+        "purpose": "Chỉ utility mã dùng Space Mono; mã phòng vẫn kế thừa Be Vietnam Pro."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 8px rgba(0, 0, 0, 0.04)",
+        "purpose": "Bóng mặc định SurfaceCard."
+      },
+      {
+        "name": "lift",
+        "value": "0 4px 16px -2px rgba(36, 55, 70, 0.05), 0 1px 2px rgba(36, 55, 70, 0.03)",
+        "purpose": "Token bóng nâng nhẹ trong Tailwind."
+      },
+      {
+        "name": "modal",
+        "value": "0 20px 32px -8px rgba(36, 55, 70, 0.12), 0 4px 8px -2px rgba(36, 55, 70, 0.04)",
+        "purpose": "Token bóng hộp thoại."
+      },
+      {
+        "name": "glow",
+        "value": "0 0 20px -5px rgba(16, 185, 129, 0.25)",
+        "purpose": "Token bóng xanh cố định, không tự đổi màu theo chủ đề."
+      },
+      {
+        "name": "room-card",
+        "value": "0 12px 40px -35px #243d35",
+        "purpose": "Bóng khối tạo/tham gia phòng."
+      }
+    ],
+    "motion": [
+      {
+        "name": "room-button",
+        "value": "background .15s, box-shadow .15s",
+        "purpose": "Phản hồi nút phòng."
+      },
+      {
+        "name": "float",
+        "value": "float 7s ease-in-out infinite",
+        "purpose": "Utility Tailwind hiện có."
+      },
+      {
+        "name": "progress",
+        "value": "width 500ms",
+        "purpose": "Thay đổi chiều rộng fill tiến độ."
+      },
+      {
+        "name": "admin-view-enter",
+        "value": "admin-view-enter 260ms ease-out both",
+        "purpose": "Chuyển khối quản trị."
+      },
+      {
+        "name": "ambient-drift-one",
+        "value": "ambient-drift 22s ease-in-out infinite alternate",
+        "purpose": "Lớp nền, có tùy chọn tắt và giảm chuyển động."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "home-actions/account-form-max",
+        "value": "480px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "rooms-mobile-max",
+        "value": "700px"
+      },
+      {
+        "name": "home/account-max",
+        "value": "760px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "rooms/tablet-max",
+        "value": "1000px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "rooms-three-columns-min",
+        "value": "1450px"
+      },
+      {
+        "name": "2xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Nút phòng chính",
+      "kind": "button",
+      "refersTo": "room-button-primary",
+      "description": "Hành động chính trong tạo/tham gia phòng; token phòng kế thừa màu chủ đề.",
+      "html": "<button class=\"ds-room-primary\" type=\"button\">Tạo phòng</button>",
+      "css": ".ds-room-primary { display:inline-flex; align-items:center; justify-content:center; gap:.6rem; min-height:44px; padding:.65rem 1.1rem; border:1px solid transparent; border-radius:11px; font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:.85rem; font-weight:650; color:#fff; background:var(--room-accent, var(--theme-accent, #059669)); cursor:pointer; transition:background .15s, box-shadow .15s; } .ds-room-primary:hover:not(:disabled) { box-shadow:0 3px 12px #122b2317; filter:brightness(.97); } .ds-room-primary:disabled { opacity:.55; cursor:wait; } .ds-room-primary:focus-visible { outline: 3px solid var(--theme-accent, #059669); outline-offset: 3px; }"
+    },
+    {
+      "name": "Nút phòng phụ",
+      "kind": "button",
+      "refersTo": "room-button-secondary",
+      "description": "Tìm hoặc sao chép lời mời với nền nhạt và viền theo màu nhấn.",
+      "html": "<button class=\"ds-room-secondary\" type=\"button\">Sao chép link</button>",
+      "css": ".ds-room-secondary { display:inline-flex; align-items:center; justify-content:center; gap:.6rem; min-height:44px; padding:.65rem 1.1rem; border:1px solid color-mix(in srgb, var(--theme-accent, #059669) 20%, rgb(var(--surface-border, 226 232 240))); border-radius:11px; font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:.85rem; font-weight:650; color:var(--room-accent, var(--theme-accent, #059669)); background:color-mix(in srgb, var(--theme-accent, #059669) 7%, rgb(var(--surface-card, 255 255 255))); cursor:pointer; transition:background .15s, box-shadow .15s; } .ds-room-secondary:hover:not(:disabled) { box-shadow:0 3px 12px #122b2317; filter:brightness(.97); } .ds-room-secondary:disabled { opacity:.55; cursor:wait; } .ds-room-secondary:focus-visible { outline: 3px solid var(--theme-accent, #059669); outline-offset: 3px; }"
+    },
+    {
+      "name": "Nút hồ sơ",
+      "kind": "button",
+      "refersTo": "account-button",
+      "description": "Lưu thay đổi; hover dùng sắc nhấn đậm, disabled ngăn thao tác.",
+      "html": "<button class=\"ds-account-button\" type=\"button\">Lưu thay đổi</button>",
+      "css": ".ds-account-button { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:44px; padding:.7rem 1rem; border:1px solid transparent; border-radius:.75rem; font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:.8rem; font-weight:600; color:white; background:var(--theme-accent, #059669); cursor:pointer; } .ds-account-button:hover:not(:disabled) { background:var(--accent-700, #047857); } .ds-account-button:disabled { opacity:.6; cursor:not-allowed; } .ds-account-button:focus-visible { outline: 3px solid var(--theme-accent, #059669); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ô nhập tên phòng",
+      "kind": "input",
+      "refersTo": "room-input",
+      "description": "Nhãn nhìn thấy, nền app và viền surface; không dùng placeholder thay nhãn.",
+      "html": "<label class=\"ds-room-label\">Tên phòng<input class=\"ds-room-input\" type=\"text\" placeholder=\"Ví dụ: Cùng luyện ký hiệu hôm nay\"></label>",
+      "css": ".ds-room-label { display:block; color:rgb(var(--text-primary, 15 23 42)); font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:.8rem; font-weight:600; } .ds-room-input { display:block; width:100%; margin-top:.55rem; padding:.8rem .9rem; border:1px solid rgb(var(--surface-border, 226 232 240)); border-radius:11px; color:inherit; background:rgb(var(--surface-app, 255 255 255)); font-family:inherit; font-size:.86rem; font-weight:400; line-height:1.6; } .ds-room-input::placeholder { color:rgb(var(--text-secondary, 71 85 105) / .72); } .ds-room-input:focus-visible { outline: 3px solid var(--theme-accent, #059669); outline-offset: 3px; }"
+    },
+    {
+      "name": "Điều hướng chính",
+      "kind": "nav",
+      "description": "Trích xuất mục active và mục thường của TopNav; bản xem mẫu không thực thi React Router.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Điều hướng mẫu\"><a class=\"ds-nav-link\" href=\"#ds-home\" aria-current=\"page\"><svg width=\"19\" height=\"20\" viewBox=\"0 0 32 34\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12 16 3l11 9v16H5ZM12 28V17h8v11\"/></svg>Trang chủ</a><a class=\"ds-nav-link\" href=\"#ds-dictionary\">Từ điển</a></nav>",
+      "css": ".ds-nav { display:flex; flex-wrap:wrap; gap:2px; } .ds-nav-link { display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:8px 12px; border-radius:12px; font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:14px; font-weight:600; line-height:1.5; text-decoration:none; color:var(--neutral-600, #475569); transition:color .15s, background-color .15s; } .ds-nav-link[aria-current=\"page\"] { color:var(--text-accent, #047857); background:var(--accent-50, #ecfdf5); } .ds-nav-link:hover { color:var(--neutral-950, #020617); background:var(--neutral-100, #f1f5f9); } .ds-nav-link:focus-visible { outline: 3px solid var(--theme-accent, #059669); outline-offset: 3px; }"
+    },
+    {
+      "name": "Nhãn vai trò",
+      "kind": "chip",
+      "description": "Nhãn thông tin tĩnh, không phải nút bấm.",
+      "html": "<span class=\"ds-role-chip\">Học viên</span>",
+      "css": ".ds-role-chip { display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .6rem; border:1px solid rgb(var(--surface-border, 226 232 240)); border-radius:99px; font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); font-size:.65rem; font-weight:600; color:var(--text-accent, #047857); background:rgb(var(--surface-card, 255 255 255)); }"
+    },
+    {
+      "name": "Thẻ bề mặt",
+      "kind": "card",
+      "refersTo": "surface-card",
+      "description": "SurfaceCard nền thẻ, rounded-xl và shadow-card; nội dung mẫu chỉ phục vụ tra cứu.",
+      "html": "<article class=\"ds-surface-card\"><div class=\"ds-card-content\">Nội dung học tập</div></article>",
+      "css": ".ds-surface-card { border-radius:.75rem; background:rgb(var(--surface-card, 255 255 255)); box-shadow:0 1px 8px rgba(0, 0, 0, .04); color:rgb(var(--text-primary, 15 23 42)); font-family:var(--display-font, \"Be Vietnam Pro\", sans-serif); } .ds-card-content { padding:1.5rem; font-size:14px; line-height:1.8; }"
+    },
+    {
+      "name": "Thanh tiến độ",
+      "kind": "custom",
+      "refersTo": "progress-track",
+      "description": "Minh họa hình thức ProgressBar với độ rộng tĩnh 50% để xem mẫu; không phải dữ liệu học viên.",
+      "html": "<div class=\"ds-progress\" role=\"img\" aria-label=\"Mẫu hình thức thanh tiến độ, không phải dữ liệu học viên\"><div class=\"ds-progress-fill\"></div></div>",
+      "css": ".ds-progress { height:.5rem; width:100%; overflow:hidden; border-radius:9999px; background:rgb(var(--surface-elevated, 247 252 250)); } .ds-progress-fill { height:100%; width:50%; border-radius:9999px; background:var(--theme-accent, #059669); transition:width .5s; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Nhịp học và kết nối",
+    "overview": "Sinh động, gần gũi, nhiều khám phá: bản sắc văn hóa Việt hiện diện qua hình ảnh và biến thể chủ đề, trong khi nội dung học, video ký hiệu và hành động tiếp theo vẫn là trọng tâm. Định hướng và ngôn ngữ mô tả này đã được người dùng xác nhận; tài liệu ghi nhận giao diện hiện có, không đề xuất một diện mạo thay thế.\n\nNút, thẻ và ô nhập mang cảm giác **gần gũi, dễ nhận biết, thao tác rõ ràng**. Hệ thống dùng **phân lớp nhẹ, bóng mềm giúp nhận biết khối nội dung**. Các trang chức năng ưu tiên đọc nhanh và thao tác; trang chủ cho phép hình ảnh văn hóa thể hiện cá tính của từng chủ đề.",
+    "keyCharacteristics": [
+      "Chung Be Vietnam Pro cho nội dung, tiêu đề và điều khiển của cả năm chủ đề.",
+      "Một hệ token ngữ nghĩa, năm bảng màu và biến thể bố cục; hỗ trợ sáng/tối độc lập với lựa chọn chủ đề.",
+      "Hình ảnh hiện có là tài sản được giữ nguyên; chuyển động nền có lựa chọn tắt.",
+      "Trạng thái quan trọng có chữ hoặc biểu tượng phù hợp, không phụ thuộc duy nhất vào âm thanh hay màu."
+    ],
+    "rules": [
+      {
+        "name": "The Semantic Color Rule",
+        "body": "Sử dụng token ngữ nghĩa và trạng thái; không chép màu của một chủ đề vào component dùng chung. `config/themes.ts` chứa màu preview có một số giá trị vàng/mực khác CSS; không dùng preview làm nguồn ghi đè giao diện.",
+        "section": "colors"
+      },
+      {
+        "name": "The Vietnamese Type Rule",
+        "body": "Giữ Be Vietnam Pro và khoảng thở cho dấu tiếng Việt; không đổi tiêu đề chủ đề sang serif. Ngoại lệ Space Mono và Material Symbols phục vụ đúng vai trò mã/icon, không dùng làm phông nội dung.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do dùng Be Vietnam Pro, token ngữ nghĩa và biến thể chủ đề đang có cho các màn hình mới.",
+      "Do giữ logo, năm chủ đề, toàn bộ ảnh và các wrapper minh họa đã được chốt.",
+      "Do giữ nhãn tiếng Việt, hành động có tên rõ ràng, focus nhìn thấy và thông báo trạng thái bằng chữ/icon.",
+      "Do kiểm tra từng chủ đề, sáng/tối, màn hình hẹp và tùy chọn giảm chuyển động sau một thay đổi UI thực tế.",
+      "Do giữ nội dung ký hiệu, bàn tay và khuôn mặt dễ quan sát; ưu tiên luồng học rồi thực hành trong PRODUCT.md.",
+      "Do phân biệt token chung, ghi đè theo route và giá trị riêng của component khi chỉnh sửa."
+    ],
+    "donts": [
+      "Don't thay React 18, TypeScript, Tailwind 3 hoặc thêm UI framework chỉ để đổi giao diện.",
+      "Don't thay font bằng serif/Plus Jakarta Sans từ tài liệu mẫu hoặc sử dụng màu preview để ghi đè palette runtime.",
+      "Don't ép tất cả chủ đề về một bố cục hay áp sidebar desktop lên trang chủ gọn.",
+      "Don't dùng âm thanh hoặc màu làm tín hiệu duy nhất cho lỗi, thiết bị, kết nối hoặc kết quả học.",
+      "Don't thay hợp đồng API, session, phân quyền, quy trình camera/micro hoặc dữ liệu khi chỉ tinh chỉnh UI.",
+      "Don't coi tài liệu trích xuất này là chứng nhận font đã tải đúng, tương phản đạt chuẩn, responsive đã kiểm thử hoặc toàn bộ ứng dụng đạt chuẩn accessibility."
+    ]
+  }
+}

@@ -7,6 +7,7 @@ import { DictionaryPage } from './pages/DictionaryPage';
 import { LessonPage } from './pages/LessonPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { CommunicationPage } from './pages/CommunicationPage';
+import { RoomsPage } from './pages/RoomsPage';
 import { MeetingRoomPage } from './features/rooms/MeetingRoomPage';
 import { AdminPage } from './pages/AdminPage';
 import { LoginPage } from './pages/LoginPage';
@@ -37,6 +38,7 @@ export default function App() {
   }
   return (
     <Routes>
+      <Route path="admin" element={hostname === 'localhost' ? <AdminRedirect /> : <AdminPage />} />
       <Route element={<AppShell />}>
         <Route index element={<HomePage />} />
         <Route path="lo-trinh-hoc-tap" element={<LearningPathPage />} />
@@ -45,8 +47,8 @@ export default function App() {
         <Route path="luyen-tap" element={<LessonPage />} />
         <Route path="on-tap" element={<ReviewPage />} />
         <Route path="giao-tiep" element={<CommunicationPage />} />
+        <Route path="giao-tiep/phong" element={<RoomsPage />} />
         <Route path="giao-tiep/phong/:code" element={<MeetingRoomPage />} />
-        <Route path="admin" element={hostname === 'localhost' || hostname === '127.0.0.1' ? <AdminRedirect /> : <AdminPage />} />
         <Route path="dang-nhap" element={<LoginPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '../../components/ui/Icon';
 import { createRoom, listRooms, readRoomCode, rememberRoomClient, rememberRoomReturn, roomPath, type RoomSummary } from './roomApi';
@@ -10,24 +10,29 @@ export function RoomsHub() {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState<RoomSummary[]>([]);
   const [loadingRooms, setLoadingRooms] = useState(false);
-  const [error, setError] = useState('');
+  const [listError, setListError] = useState('');
+  const [createError, setCreateError] = useState('');
+  const [inviteError, setInviteError] = useState('');
   const [refresh, setRefresh] = useState(0);
   const [title, setTitle] = useState('');
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
   const [invite, setInvite] = useState('');
   const [busy, setBusy] = useState(false);
   const createId = useRef<string | null>(null);
+  const inviteInput = useRef<HTMLInputElement>(null);
+  const createErrorId = useId();
+  const inviteErrorId = useId();
   useEffect(() => {
-    if (!session) { setRooms([]); return; }
+    if (!session) { setRooms([]); setListError(''); return; }
     const controller = new AbortController();
     let active = true;
     let timer: ReturnType<typeof setTimeout>;
     const load = async () => {
       try {
         const result = await listRooms(controller.signal);
-        if (active) { setRooms(result); setError(''); }
+        if (active) { setRooms(result); setListError(''); }
       } catch (failure) {
-        if (active) setError(failure instanceof Error ? failure.message : 'Không tải được danh sách phòng.');
+        if (active) setListError(failure instanceof Error ? failure.message : 'Không tải được danh sách phòng.');
       } finally {
         if (active) { setLoadingRooms(false); timer = setTimeout(load, 10_000); }
       }
@@ -40,21 +45,26 @@ export function RoomsHub() {
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!session || busy) return;
-    setBusy(true); setError('');
+    setBusy(true); setCreateError('');
     try {
       createId.current ??= crypto.randomUUID();
       const result = await createRoom(title.trim(), visibility, createId.current, session);
       rememberRoomClient(result.room.code, createId.current);
       navigate(roomPath(result.room.code), { state: { created: true } });
       createId.current = null;
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Không tạo được phòng.'); }
+    } catch (failure) { setCreateError(failure instanceof Error ? failure.message : 'Không tạo được phòng.'); }
     finally { setBusy(false); }
   }
 
   function join(event: FormEvent) {
     event.preventDefault();
     const code = readRoomCode(invite);
-    if (!code) { setError('Nhập mã phòng gồm 10 ký tự hoặc dán link mời hợp lệ.'); return; }
+    if (!code) {
+      setInviteError('Nhập mã phòng gồm 10 ký tự hoặc dán link mời hợp lệ.');
+      inviteInput.current?.focus();
+      return;
+    }
+    setInviteError('');
     navigate(roomPath(code));
   }
 
@@ -77,19 +87,21 @@ export function RoomsHub() {
             <label className={visibility === 'public' ? 'selected' : ''}><input type="radio" name="room-visibility" value="public" checked={visibility === 'public'} onChange={() => setVisibility('public')} disabled={busy} /><Icon name="public" /><span><strong>Công khai</strong><small>Hiển thị trong danh sách phòng</small></span></label>
             <label className={visibility === 'private' ? 'selected' : ''}><input type="radio" name="room-visibility" value="private" checked={visibility === 'private'} onChange={() => setVisibility('private')} disabled={busy} /><Icon name="lock" /><span><strong>Riêng tư</strong><small>Tham gia bằng mã hoặc link mời</small></span></label>
           </fieldset>
-          <button className="rooms-button primary" disabled={busy || !title.trim()}>{busy ? 'Đang tạo phòng…' : 'Tạo phòng'}<Icon name="arrow_forward" /></button>
+          {createError && <div id={createErrorId} className="rooms-alert" role="alert">{createError}</div>}
+          <button className="rooms-button primary" aria-describedby={createError ? createErrorId : undefined} disabled={busy || !title.trim()}>{busy ? 'Đang tạo phòng…' : createError ? 'Thử tạo lại phòng' : 'Tạo phòng'}<Icon name="arrow_forward" /></button>
         </form>
         <form className="rooms-entry-card rooms-join-card" onSubmit={join}>
           <span className="rooms-card-icon"><Icon name="link" /></span><h3>Bạn đã có lời mời?</h3><p>Dán link bạn bè gửi hoặc nhập mã phòng để cùng tham gia.</p>
-          <label>Mã phòng hoặc link mời<input required maxLength={2048} autoComplete="off" placeholder="Nhập mã hoặc dán link tại đây" value={invite} onChange={event => setInvite(event.target.value)} /></label>
+          <label>Mã phòng hoặc link mời<input ref={inviteInput} required maxLength={2048} autoComplete="off" placeholder="Nhập mã hoặc dán link tại đây" value={invite} aria-invalid={inviteError ? true : undefined} aria-describedby={inviteError ? inviteErrorId : undefined} onChange={event => { setInvite(event.target.value); setInviteError(''); }} /></label>
+          {inviteError && <p id={inviteErrorId} className="rooms-field-error" role="alert">{inviteError}</p>}
           <button className="rooms-button secondary" disabled={!invite.trim()}>Tìm phòng <Icon name="arrow_forward" /></button>
           <div className="rooms-join-tip"><Icon name="sign_language" /><p>Giữ đôi tay và khuôn mặt trong khung hình để mọi người dễ quan sát ký hiệu của bạn.</p></div>
         </form>
       </div>
-      {error && <div className="rooms-alert" role="alert">{error}<button onClick={() => setRefresh(value => value + 1)}>Thử lại</button></div>}
       <div className="rooms-list-heading"><div><h3>Phòng đang mở</h3><p>Gặp gỡ và giao tiếp cùng cộng đồng.</p></div><button className="rooms-button subtle" onClick={() => setRefresh(value => value + 1)} disabled={loadingRooms}><Icon name="refresh" /> Làm mới</button></div>
+      {listError && <div className="rooms-alert" role="alert"><span>{listError}{rooms.length > 0 && ' Danh sách bên dưới có thể chưa được cập nhật.'}</span><button onClick={() => setRefresh(value => value + 1)} disabled={loadingRooms}>{loadingRooms ? 'Đang tải lại…' : 'Thử tải lại'}</button></div>}
       {loadingRooms && !rooms.length ? <p className="rooms-note" role="status">Đang tìm phòng…</p> : !rooms.length ?
-        <div className="rooms-empty"><Icon name="meeting_room" /><h4>Chưa có phòng công khai</h4><p>Hãy tạo phòng đầu tiên hoặc tham gia bằng lời mời của bạn bè.</p></div> :
+        !listError && <div className="rooms-empty"><Icon name="meeting_room" /><h4>Chưa có phòng công khai</h4><p>Hãy tạo phòng đầu tiên hoặc tham gia bằng lời mời của bạn bè.</p></div> :
         <div className="rooms-list">{rooms.map(room => <article className="rooms-public-card" key={room.code}>
           <span className="rooms-public-badge"><span className="rooms-live-dot" /> Đang mở</span><h4>{room.title}</h4>
           <p><Icon name="groups" />{room.participant_count}/{room.max_participants} người tham gia</p>

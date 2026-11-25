@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../../components/ui/Icon';
 import { RoomCall, type PeerView } from './RoomCall';
-import { readRoomCode, rememberRoomReturn, roomClientId, roomInvite, type MediaFlags, type Participant, type RoomState } from './roomApi';
+import { ROOMS_PATH, readRoomCode, rememberRoomReturn, roomClientId, roomInvite, type MediaFlags, type Participant, type RoomState } from './roomApi';
 import { useRoomSession } from './useRoomSession';
 import './rooms.css';
 
@@ -145,15 +145,15 @@ export function MeetingRoomPage() {
 
   function leave() {
     controller.current?.close();
-    navigate('/giao-tiep');
+    navigate(ROOMS_PATH);
   }
 
-  if (!code) return <div className="room-page"><div className="rooms-empty"><Icon name="link_off" /><h1>Link phòng không hợp lệ</h1><p>Kiểm tra lại lời mời hoặc nhập mã phòng từ trang giao tiếp.</p><Link className="rooms-button primary" to="/giao-tiep">Về trang giao tiếp</Link></div></div>;
+  if (!code) return <div className="room-page"><div className="rooms-empty"><Icon name="link_off" /><h1>Link phòng không hợp lệ</h1><p>Kiểm tra lại lời mời hoặc nhập mã tại danh sách phòng.</p><Link className="rooms-button primary" to={ROOMS_PATH}>Về danh sách phòng</Link></div></div>;
 
   const participants = snapshot?.participants ?? [];
   const visiblePinned = participants.some(member => member.id === pinned) ? pinned : null;
   return <div className="room-page">
-    <header className="room-page-heading"><div><Link to="/giao-tiep" className="room-back"><Icon name="arrow_back" /> Không gian giao tiếp</Link>
+    <header className="room-page-heading"><div><Link to={ROOMS_PATH} className="room-back"><Icon name="arrow_back" /> Danh sách phòng</Link>
       <h1>{snapshot?.room.title ?? 'Cùng nhau kết nối'}</h1>
       <p>{snapshot ? <><span className="rooms-live-dot" /> {participants.length}/6 người · {snapshot.room.visibility === 'private' ? 'Phòng riêng tư' : 'Phòng công khai'}</> : 'Tham gia cuộc gọi và giao tiếp bằng ký hiệu cùng bạn bè.'}</p></div>
       <button className="rooms-button secondary" onClick={copyInvite}><Icon name="link" /> Sao chép link mời</button></header>
@@ -167,8 +167,8 @@ export function MeetingRoomPage() {
         <p>Camera và micro chỉ được truy cập sau khi bạn nhấn tham gia. Bạn có thể vào để quan sát rồi bật thiết bị sau.</p>
         <span className="room-code">{code.slice(0, 5)}-{code.slice(5)}</span>
         <div className="room-device-options"><label><input type="checkbox" checked={camera} onChange={event => setCamera(event.target.checked)} disabled={busy} /><Icon name="videocam" />Bật camera khi vào</label><label><input type="checkbox" checked={microphone} onChange={event => setMicrophone(event.target.checked)} disabled={busy} /><Icon name="mic" />Bật micro khi vào</label></div>
-        <button className="rooms-button primary" onClick={() => void enter()} disabled={busy}>{busy ? 'Đang tham gia…' : 'Vào phòng'}<Icon name="arrow_forward" /></button>
-        <Link className="room-back" to="/giao-tiep">Quay lại danh sách phòng</Link>
+        <button className="rooms-button primary" onClick={() => void enter(camera, microphone)} disabled={busy}>{busy ? 'Đang tham gia…' : 'Vào phòng'}<Icon name="arrow_forward" /></button>
+        <Link className="room-back" to={ROOMS_PATH}>Quay lại danh sách phòng</Link>
       </div> : <>
       {reconnecting && <div className="rooms-alert notice" role="status"><Icon name="sync" />Kết nối đang gián đoạn. Đang tự kết nối lại; bạn không cần rời phòng.</div>}
       <div className="room-call-layout"><section aria-label="Video thành viên" className={`room-stage${visiblePinned ? ' has-pinned' : ''}${participants.length === 1 ? ' solo' : ''}`}>

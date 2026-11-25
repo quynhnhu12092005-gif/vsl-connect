@@ -28,6 +28,7 @@ export function ReviewPage() {
   const [sessionKey, setSessionKey] = useState(0);
   const [results, setResults] = useState<RoundResult[]>([]);
   const workspace = useRef<HTMLDivElement>(null);
+  const returnFocus = useRef<GameMode | null>(null);
   const topics = useMemo(() => [...new Set(signs.map(sign => sign.topic).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi')), [signs]);
   const deck = useMemo(() => playableSigns(signs.filter(sign => topic === 'all' || sign.topic === topic)), [signs, topic]);
   const summary = useMemo(() => results.reduce((total, result) => ({ correct: total.correct + result.correct, mistakes: total.mistakes + result.mistakes }), { correct: 0, mistakes: 0 }), [results]);
@@ -36,8 +37,12 @@ export function ReviewPage() {
   }, []);
   useEffect(() => {
     if (active) workspace.current?.querySelector('h2')?.focus();
+    else if (returnFocus.current) {
+      document.getElementById(`review-launch-${returnFocus.current}`)?.focus();
+      returnFocus.current = null;
+    }
   }, [active, sessionKey]);
-  const onExit = () => setActive(null);
+  const onExit = () => { returnFocus.current = active?.mode ?? null; setActive(null); };
   const onReplay = () => setSessionKey(value => value + 1);
 
   if (active) {
@@ -55,7 +60,7 @@ export function ReviewPage() {
       <section className="review-deck-picker" aria-label="Chọn bộ từ ôn tập"><div className="review-deck-intro"><span><Icon name="tune" /></span><div><h3>Bộ từ của lượt chơi</h3><p>Chọn chủ đề và nhịp chơi phù hợp với bạn.</p></div></div><div className="review-deck-fields"><label>Chủ đề<select value={topic} disabled={loading || error} onChange={event => setTopic(event.target.value)}><option value="all">Tất cả chủ đề</option>{topics.map(item => <option key={item} value={item}>{item}</option>)}</select></label><label>Nhịp chơi Blast<select value={timed ? 'timed' : 'relaxed'} onChange={event => setTimed(event.target.value === 'timed')}><option value="timed">Thử thách · 20 giây / câu</option><option value="relaxed">Thoải mái · Không giới hạn</option></select></label></div></section>
       <div className="review-game-cards">{games.map(game => {
         const playable = !loading && !error && deck.length >= game.minimum;
-        return <article key={game.id} className={`review-mode-card review-mode-card--${game.id}`}><GameArt mode={game.id} /><div className="review-mode-content"><div className="review-mode-eyebrow"><span>{game.tag}</span><span>{game.number}</span></div><h3>{game.name}</h3><p className="review-mode-description">{game.description}</p><p className="review-mode-details">{game.details}</p><div className="review-mode-meta"><span><Icon name={game.id === 'blocks' ? 'grid_view' : game.id === 'match' ? 'style' : 'favorite'} />{game.id === 'blocks' ? 'Bảng 6 × 6' : game.id === 'match' ? 'Tối đa 6 cặp' : '10 câu · 3 lượt'}</span><span><Icon name="videocam" />Video ký hiệu</span></div><button type="button" className="review-button" disabled={!playable} onClick={() => { setSessionKey(value => value + 1); setActive({ mode: game.id, deck: [...deck], timed, topic }); }}><Icon name={game.icon} />Chơi {game.name === 'Blast' ? 'Blast' : game.name.toLocaleLowerCase('vi-VN')}<Icon name="arrow_forward" /></button><p className="review-mode-requirement">{playable ? 'Sẵn sàng rồi, bắt đầu thôi!' : `Cần ít nhất ${game.minimum} ký hiệu khác nhau có video.`}</p></div></article>;
+        return <article key={game.id} className={`review-mode-card review-mode-card--${game.id}`}><GameArt mode={game.id} /><div className="review-mode-content"><div className="review-mode-eyebrow"><span>{game.tag}</span><span>{game.number}</span></div><h3>{game.name}</h3><p className="review-mode-description">{game.description}</p><p className="review-mode-details">{game.details}</p><div className="review-mode-meta"><span><Icon name={game.id === 'blocks' ? 'grid_view' : game.id === 'match' ? 'style' : 'favorite'} />{game.id === 'blocks' ? 'Bảng 6 × 6' : game.id === 'match' ? 'Tối đa 6 cặp' : '10 câu · 3 lượt'}</span><span><Icon name="videocam" />Video ký hiệu</span></div><button type="button" id={`review-launch-${game.id}`} className="review-button" disabled={!playable} onClick={() => { setSessionKey(value => value + 1); setActive({ mode: game.id, deck: [...deck], timed, topic }); }}><Icon name={game.icon} />Chơi {game.name === 'Blast' ? 'Blast' : game.name.toLocaleLowerCase('vi-VN')}<Icon name="arrow_forward" /></button><p className="review-mode-requirement">{playable ? 'Sẵn sàng rồi, bắt đầu thôi!' : `Cần ít nhất ${game.minimum} ký hiệu khác nhau có video.`}</p></div></article>;
       })}</div>
       {(loading || error) && <div className="mt-6"><LoadState loading={loading} retry={retry} /></div>}
       {!loading && !error && deck.length < 2 && <div className="mt-6"><EmptyState icon="video_library" title="Bộ từ đang chờ thêm video" description="Các trò chơi dùng ký hiệu có video đã xuất bản. Hãy chọn bộ lọc khác hoặc quay lại khi nội dung đã được bổ sung."><Link to="/tu-dien-ky-hieu" className="review-button review-button--quiet"><Icon name="menu_book" />Khám phá từ điển</Link></EmptyState></div>}
