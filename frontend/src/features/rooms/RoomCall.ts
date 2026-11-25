@@ -1,5 +1,6 @@
 import { ApiError, type AuthSession } from '../../services/adminApi';
 import { requestRoomDevice, startRoomDevices } from './roomMedia';
+import { CAPTION_CHANNEL, readCaption, type RoomCaption } from './captions';
 import { joinRoom, leaveRoom, roomIce, sendRoomSignal, syncRoom,
   type MediaFlags, type Participant, type RoomSignal, type RoomState, type SignalKind } from './roomApi';
 
@@ -7,6 +8,7 @@ export type PeerView = { id: string; stream: MediaStream; status: RTCPeerConnect
 type Peer = PeerView & {
   pc: RTCPeerConnection; video: RTCRtpSender | null; audio: RTCRtpSender | null;
   pendingIce: RTCIceCandidateInit[]; offering: boolean;
+  captions?: RTCDataChannel;
 };
 type CallEvents = {
   snapshot: (state: RoomState) => void;
@@ -15,6 +17,7 @@ type CallEvents = {
   network: (reconnecting: boolean) => void;
   notice: (message: string) => void;
   ended: (reason: string) => void;
+  caption: (senderId: string, caption: RoomCaption) => void;
 };
 
 /** One browser connection. All room state lives on the server, not in a singleton. */
@@ -102,6 +105,7 @@ export class RoomCall {
     const previous = this.localStream.getTracks().filter(track => track.kind === kind);
     if (previous.length) {
       previous.forEach(track => { this.localStream.removeTrack(track); track.stop(); });
+      this.publishLocal();
       await Promise.all([...this.peers.values()].map(peer =>
         (kind === 'video' ? peer.video : peer.audio)?.replaceTrack(null).catch(() => undefined)));
     } else {
@@ -126,6 +130,32 @@ export class RoomCall {
 
   private publishPeers() {
     if (!this.closed) this.events.peers([...this.peers.values()].map(({ id, stream, pc }) => ({ id, stream, status: pc.connectionState })));
+  }
+
+  sendCaption(caption: RoomCaption) {
+    const message = JSON.stringify(caption);
+    for (const peer of this.peers.values()) {
+      const channel = peer.captions;
+      if (channel?.readyState !== 'open' || channel.bufferedAmount > 4096) continue;
+      try { channel.send(message); } catch { /* A closing peer no longer receives captions. */ }
+    }
+  }
+
+  private attachCaptionChannel(peer: Peer, channel: RTCDataChannel) {
+    if (channel.label !== CAPTION_CHANNEL || peer.captions) {
+      channel.close();
+      return;
+    }
+    peer.captions = channel;
+    const lastReceived = { speech: -Infinity, sign: -Infinity };
+    channel.onmessage = event => {
+      if (this.closed || this.peers.get(peer.id) !== peer) return;
+      const now = performance.now();
+      const caption = readCaption(event.data);
+      if (!caption || now - lastReceived[caption.source] < 150) return;
+      lastReceived[caption.source] = now;
+      this.events.caption(peer.id, caption);
+    };
   }
 
   private signal(recipient: string, kind: SignalKind, data: object) {
@@ -158,6 +188,8 @@ export class RoomCall {
     const peer: Peer = { id: member.id, pc, stream: new MediaStream(), status: 'new',
       video, audio, pendingIce: [], offering: false };
     this.peers.set(member.id, peer);
+    pc.ondatachannel = event => this.attachCaptionChannel(peer, event.channel);
+    if (offerer) this.attachCaptionChannel(peer, pc.createDataChannel(CAPTION_CHANNEL, { maxPacketLifeTime: 2000 }));
     pc.onicecandidate = event => { if (event.candidate) void this.signal(member.id, 'ice', event.candidate.toJSON()); };
     pc.ontrack = event => {
       if (!peer.stream.getTrackById(event.track.id)) peer.stream.addTrack(event.track);
@@ -303,6 +335,7 @@ export class RoomCall {
     this.abort?.abort();
     for (const peer of this.peers.values()) {
       peer.pc.ontrack = null; peer.pc.onicecandidate = null;
+      peer.pc.ondatachannel = null;
       peer.pc.onconnectionstatechange = null; peer.pc.onnegotiationneeded = null;
       peer.pc.close();
     }

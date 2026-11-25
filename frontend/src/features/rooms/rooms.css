@@ -83,6 +83,59 @@
 .room-call-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; align-items: start; gap: 1rem; }
 .room-stage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: .8rem; min-width: 0; }
 .room-stage.solo { grid-template-columns: 1fr; }
+.room-video-column { min-width: 0; }
+.room-captions {
+  margin-top: .85rem;
+  padding: clamp(.85rem, 2vw, 1.2rem);
+  border: 1px solid var(--room-border);
+  border-radius: 1rem;
+  background: rgb(var(--surface-card));
+}
+.room-captions-header, .room-caption-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+}
+.room-captions-header { justify-content: space-between; }
+.room-captions-header h2 { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
+.room-caption-button {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  padding: .45rem .75rem;
+  border: 1px solid rgb(var(--outline));
+  border-radius: .65rem;
+  font-size: .82rem;
+  font-weight: 600;
+}
+.room-caption-button .material-symbols-outlined { font-size: 1.1rem; }
+.room-caption-button:hover:not(:disabled) { background: rgb(var(--surface-elevated)); }
+.room-caption-button[aria-pressed='true'],
+.room-caption-button[aria-pressed='true']:hover:not(:disabled) {
+  color: white;
+  background: var(--accent-700);
+}
+.room-caption-button:focus-visible { outline: 3px solid var(--text-accent); outline-offset: 2px; }
+.room-caption-button:disabled { opacity: .55; cursor: not-allowed; }
+.room-caption-display {
+  min-height: 4rem;
+  margin-block: .7rem;
+  padding: .7rem .8rem;
+  border-radius: .7rem;
+  background: rgb(var(--surface-low));
+}
+.room-caption-actions { margin-top: .7rem; }
+.room-caption-line + .room-caption-line { margin-top: .5rem; padding-top: .5rem; border-top: 1px solid var(--room-border); }
+.room-caption-line { overflow-wrap: anywhere; }
+.room-caption-line p { font-size: 1rem; line-height: 1.55; font-weight: 600; }
+.room-caption-line span, .room-caption-placeholder, .room-caption-help, .room-caption-source-status {
+  color: rgb(var(--text-secondary));
+  font-size: .8rem;
+  line-height: 1.65;
+}
+.room-caption-help, .room-caption-source-status { margin-top: .5rem; }
 .room-video-tile { position: relative; min-width: 0; overflow: hidden; aspect-ratio: 16/10; background: #111923; border: 2px solid #263442; border-radius: 17px; isolation: isolate; }
 .room-video-tile.raised { border-color: #ecc16c; box-shadow: 0 0 0 2px #ecc16c33; }
 .room-video-tile.pinned { grid-column: 1/-1; aspect-ratio: 16/9; }

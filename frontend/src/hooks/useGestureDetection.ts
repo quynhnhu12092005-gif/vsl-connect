@@ -205,6 +205,7 @@ function assessFrameQuality(
 export function useGestureDetection(
   videoRef: RefObject<HTMLVideoElement | null>,
   canvasRef: RefObject<HTMLCanvasElement | null>,
+  logPredictions: boolean = gestureDetectionConfig.debug.consoleLogging,
 ) {
   const landmarkerRef = useRef<HandLandmarker | null>(null);
   const landmarkerModeRef = useRef<DetectorMode | null>(null);
@@ -405,7 +406,7 @@ export function useGestureDetection(
       publishDebug(currentHands, Math.round(inferenceMs));
 
       // Console log Top-3 xác suất cao nhất
-      if (gestureDetectionConfig.debug.consoleLogging) {
+      if (logPredictions) {
         const top3Str = result.top3
           ? result.top3.map((t) => `${t.label_name} (${(t.confidence * 100).toFixed(1)}%)`).join(' | ')
           : 'N/A';
@@ -432,7 +433,7 @@ export function useGestureDetection(
         setIsPredicting(false);
       }
     }
-  }, [publishDebug]);
+  }, [logPredictions, publishDebug]);
 
   /**
    * Nhận diện file video tải lên qua POST /api/v1/gesture/predict/video (Độc lập 100% với camera).
