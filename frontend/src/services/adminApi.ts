@@ -48,7 +48,6 @@ export type AdminSign = {
   region: string;
   description: string;
   video_url: string | null;
-  source: string | null;
   is_published: boolean;
 };
 

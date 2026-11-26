@@ -101,7 +101,6 @@ class Sign(Base):
     region: Mapped[str] = mapped_column(String(120), index=True)
     description: Mapped[str] = mapped_column(Text, default='', server_default=text("('')"))
     video_url: Mapped[str | None] = mapped_column(String(2048))
-    source: Mapped[str | None] = mapped_column(String(500))
     is_published: Mapped[bool] = mapped_column(Boolean, server_default=false(), index=True)
 
 

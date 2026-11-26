@@ -12,7 +12,6 @@ from app.db import get_engine
 from app.models import Sign
 
 
-SOURCE = 'Danh mục nhãn nhận diện VSL nội bộ; cần gắn video đã được cấp quyền.'
 REGION = 'Chưa phân vùng'
 
 SIGNS = [
@@ -50,7 +49,6 @@ def main() -> None:
                 region=REGION,
                 description=description,
                 video_url=None,
-                source=SOURCE,
                 is_published=True,
             ))
             created += 1

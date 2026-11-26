@@ -101,6 +101,24 @@ After a test deployment succeeds, verify:
 - Login, logout, profile changes, Google OTP, and Brevo delivery work over HTTPS.
 - AI inference loads the trained model and video conversion can execute FFmpeg.
 
+For `j26b_drop_sign_source`, use this order because older backends still read
+`signs.source`:
+
+1. Export the existing values from the target database using
+   `SELECT id, source FROM signs WHERE source IS NOT NULL ORDER BY id;`.
+   Keep the export with your database backups and verify that it can be read.
+2. Deploy the backend and frontend that omit `source`. They can run while the
+   old nullable column still exists. Check the public dictionary and create
+   and edit a sign in a test environment.
+3. Once the new backend serves production, run
+   `alembic upgrade j26b_drop_sign_source` from the matching backend release
+   against the verified target database. Check `alembic current` and reopen
+   the dictionary.
+4. If rolling back to a backend that reads `source`, restore the column with
+   `alembic downgrade h26a_seasonal_appearance` before routing traffic to
+   that backend. Restore the original field values by sign ID from the export
+   if needed. Downgrade recreates the column with NULL values.
+
 ## Remaining work before a full release
 
 - Existing media upload and gesture video conversion send files through the

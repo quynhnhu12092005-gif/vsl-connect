@@ -6,7 +6,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -96,6 +96,35 @@ def test_shared_winter_appearance_requires_admin_to_change(client):
     }
 
 
+def test_drop_sign_source_keeps_existing_dictionary_entry(tmp_path, monkeypatch):
+    database_url = f"sqlite:///{(tmp_path / 'sign-source.db').as_posix()}"
+    monkeypatch.setenv('DATABASE_URL', database_url)
+    config = Config(str(Path(__file__).resolve().parents[1] / 'alembic.ini'))
+    command.upgrade(config, 'h26a_seasonal_appearance')
+    engine = create_engine(database_url)
+    try:
+        video_url = 'https://res.cloudinary.com/test-cloud/video/upload/sign.mp4'
+        with engine.begin() as connection:
+            connection.execute(text(
+                "INSERT INTO signs (id, label, topic, region, description, video_url, source, is_published) "
+                "VALUES (1, 'Xin chào', 'Chào hỏi', 'Bắc', 'Mô tả', :video_url, 'Ghi chú cũ', true)"
+            ), {'video_url': video_url})
+
+        command.upgrade(config, 'j26b_drop_sign_source')
+        assert 'source' not in {column['name'] for column in inspect(engine).get_columns('signs')}
+        with Session(engine) as session:
+            sign = session.get(Sign, 1)
+            assert (sign.label, sign.topic, sign.region, sign.description, sign.video_url, sign.is_published) == (
+                'Xin chào', 'Chào hỏi', 'Bắc', 'Mô tả', video_url, True,
+            )
+
+        command.downgrade(config, 'h26a_seasonal_appearance')
+        with engine.connect() as connection:
+            assert connection.execute(text('SELECT source, video_url FROM signs WHERE id = 1')).one() == (None, video_url)
+    finally:
+        engine.dispose()
+
+
 def test_public_content_and_pagination(client):
     assert client.get('/health').json() == {'status': 'ok'}
     assert client.get('/health/ready').status_code == 200
@@ -161,8 +190,15 @@ def test_admin_crud_requires_admin_session_and_csrf(client):
 
     lesson = client.post('/api/v1/admin/lessons', json={'course_id': course_id, 'title': 'First lesson', 'description': '', 'position': 1, 'video_url': None, 'captions_url': None, 'is_published': False}, headers=csrf_headers)
     assert lesson.status_code == 201
-    sign = client.post('/api/v1/admin/signs', json={'label': 'Test sign', 'topic': 'Test', 'region': 'North', 'description': '', 'video_url': None, 'source': None, 'is_published': False}, headers=csrf_headers)
+    sign_payload = {'label': 'Test sign', 'topic': 'Test', 'region': 'North', 'description': '', 'video_url': None, 'is_published': False}
+    sign = client.post('/api/v1/admin/signs', json=sign_payload, headers=csrf_headers)
     assert sign.status_code == 201
+    updated_sign = client.put(f"/api/v1/admin/signs/{sign.json()['id']}", json={
+        **sign_payload, 'is_published': True,
+    }, headers=csrf_headers)
+    assert updated_sign.status_code == 200
+    assert updated_sign.json()['is_published'] is True
+    assert 'source' not in updated_sign.json()
     user = client.post('/api/v1/admin/users', json={'email': 'new@example.com', 'display_name': 'New user', 'password': 'another-correct-password', 'role': 'learner'}, headers=csrf_headers)
     assert user.status_code == 201
     updated_user = client.put(f"/api/v1/admin/users/{user.json()['id']}", json={'display_name': 'Updated user', 'password': None, 'role': 'learner'}, headers=csrf_headers)

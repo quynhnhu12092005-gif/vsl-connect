@@ -32,7 +32,6 @@ class SignOut(BaseModel):
     region: str
     description: str
     video_url: str | None
-    source: str | None
 
 
 class CourseInput(BaseModel):
@@ -78,7 +77,6 @@ class SignInput(BaseModel):
     region: str = Field(min_length=1, max_length=120)
     description: str = Field(default='', max_length=10000)
     video_url: str | None = Field(default=None, max_length=2048)
-    source: str | None = Field(default=None, max_length=500)
     is_published: bool = False
 
     @field_validator('video_url')
